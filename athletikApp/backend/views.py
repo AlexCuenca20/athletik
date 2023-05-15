@@ -38,11 +38,10 @@ class UserView(View):
 
     def get(self, request):
 
-        data = json.loads(request.decode("utf-8"))
-        username = data.get('username')
-        password = data.get('password')
+        username = request.GET.get('username')
+        password = request.GET.get('password')
 
-        user = authenticate(username, password)
+        user = authenticate(username=username, password=password)
         if user is not None:
             response = {
                 'message': f'Logged in as: {user.username}',
@@ -51,7 +50,7 @@ class UserView(View):
             }
         else:
             response = {
-                'message': f'Incorrect username or password: {user.username}',
+                'message': f'Incorrect username or password',
                 'ok': False,
                 'status_code': 401
             }
