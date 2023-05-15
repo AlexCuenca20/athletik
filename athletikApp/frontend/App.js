@@ -34,7 +34,7 @@ export default function App() {
           <Stack.Screen
             name="SignUp"
             component={SignUp}
-            options={{ title: '' }}
+            options={{ title: 'CREA TU CUENTA' }}
           />
         </Stack.Navigator>
       </NavigationContainer >
