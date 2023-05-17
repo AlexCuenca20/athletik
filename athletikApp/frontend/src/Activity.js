@@ -2,32 +2,22 @@ import React, { Component } from 'react'
 import { View, StyleSheet } from 'react-native';
 import FooterTabs from './FooterTabs';
 
-export class HomePage extends Component {
-    constructor() {
-        super();
-        this.state = {
-            index: 0
-        }
-    }
-
-    setIndex(index) {
-        this.setState({
-            index: index
-        })
-    }
-
+export class Activity extends Component {
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.upperContainer}>
                 </View>
-                <FooterTabs navigation={this.props.navigation}></FooterTabs>
+                <View style={styles.lowerContainer}>
+
+                </View>
+                <FooterTabs></FooterTabs>
             </View >
         )
     }
 }
 
-export default HomePage
+export default Activity
 
 const styles = StyleSheet.create({
     container: {
@@ -36,9 +26,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     upperContainer: {
-        flex: 8,
+        flex: 3,
         width: '100%',
         alignItems: 'center',
         paddingTop: 40,
     },
+    lowerContainer: {
+        flex: 6,
+        width: '100%',
+        backgroundColor: '#333',
+    }
 });

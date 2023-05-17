@@ -7,6 +7,7 @@ import LandingPage from './src/LandingPage';
 import SignUp from './src/SignUp';
 import HomePage from './src/HomePage';
 import Activity from './src/Activity.js';
+import FooterTabs from './src/FooterTabs.js';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -42,6 +43,11 @@ export default function App() {
             name="HomePage"
             component={HomePage}
             options={{ title: 'Inicio' }}
+          />
+          <Stack.Screen
+            name="Activity"
+            component={Activity}
+            options={{ title: '' }}
           />
         </Stack.Navigator>
       </NavigationContainer >
