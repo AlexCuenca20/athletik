@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/Login.js';
 import LandingPage from './src/LandingPage';
 import SignUp from './src/SignUp';
+import HomePage from './src/HomePage';
+import Activity from './src/Activity.js';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -35,6 +37,11 @@ export default function App() {
             name="SignUp"
             component={SignUp}
             options={{ title: 'CREA TU CUENTA' }}
+          />
+          <Stack.Screen
+            name="HomePage"
+            component={HomePage}
+            options={{ title: 'Inicio' }}
           />
         </Stack.Navigator>
       </NavigationContainer >
