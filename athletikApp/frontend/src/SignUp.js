@@ -60,7 +60,7 @@ class SignUp extends Component {
             })
             .then((responseJson) => {
                 alert('registrado!!');
-                this.props.navigation.navigate('LandingPage');
+                this.props.navigation.navigate('HomePage');
                 return responseJson;
             })
             .catch((error) => {
