@@ -28,7 +28,7 @@ export class FooterTabs extends Component {
                     containerStyle={{ width: '25%' }}
                     title="Inicio"
                     titleStyle={{
-                        fontSize: '12px',
+                        fontSize: 12,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleLoginPress()}
@@ -39,7 +39,7 @@ export class FooterTabs extends Component {
                     containerStyle={{ width: '25%', height: '100%' }}
                     title="Actividad"
                     titleStyle={{
-                        fontSize: '12px',
+                        fontSize: 12,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleActivtyPress()}
@@ -50,7 +50,7 @@ export class FooterTabs extends Component {
                     containerStyle={{ width: '25%' }}
                     title="Perfil"
                     titleStyle={{
-                        fontSize: '12px',
+                        fontSize: 12,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleLoginPress()}
@@ -61,7 +61,7 @@ export class FooterTabs extends Component {
                     containerStyle={{ width: '25%' }}
                     title="Mis Actividades"
                     titleStyle={{
-                        fontSize: '12px',
+                        fontSize: 12,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleLoginPress()}

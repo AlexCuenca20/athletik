@@ -42,7 +42,7 @@ class SignUp extends Component {
     }
 
     async registerUser() {
-        fetch('http://127.0.0.1:8000/api/v1/users/',
+        fetch('http://192.168.1.144:8000/api/v1/users/',
             {
                 method: "POST",
                 mode: "cors",
@@ -115,7 +115,7 @@ class SignUp extends Component {
                         containerStyle={{ width: '90%' }}
                         title="ÚNETE"
                         titleStyle={{
-                            fontSize: '12px',
+                            fontSize: 12,
                             fontWeight: 'bold',
                         }}
                         onPress={() => this.handleSignUpPress()}

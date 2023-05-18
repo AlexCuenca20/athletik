@@ -11,11 +11,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "REPLACE_FOR_API_KEY"
+        "googleMapsApiKey": "AIzaSyD3EtozJa0Z4puzGaaLSJkZDxALJVq936M"
       }
     },
     "android": {
@@ -25,12 +27,18 @@
       },
       "config": {
         "googleMaps": {
-          "apiKey": "REPLACE_FOR_API_KEY"
+          "apiKey": "AIzaSyD3EtozJa0Z4puzGaaLSJkZDxALJVq936M"
         }
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e730b408-5f32-4186-91c3-7cffb41dcf52"
+      }
+    },
+    "owner": "alexcuenca"
   }
 }

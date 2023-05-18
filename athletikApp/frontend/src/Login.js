@@ -29,7 +29,7 @@ class Login extends Component {
 
     handleLoginPress() {
         if (this._validateInputs()) {
-            fetch('http://127.0.0.1:8000/api/v1/users/?username=' + this.state.username + '&password=' + this.state.password,
+            fetch('http://192.168.1.144:8000/api/v1/users/?username=' + this.state.username + '&password=' + this.state.password,
                 {
                     method: "GET",
                     mode: "cors",
@@ -41,14 +41,10 @@ class Login extends Component {
                 .then((response) => {
                     console.log(response);
                     if (response.ok) {
-                        return response.json();
+                        this.props.navigation.navigate('HomePage');
+                        return;
                     }
                     throw new Error('Something went wrong');
-                })
-                .then((responseJson) => {
-                    alert('iniciadoo!!');
-                    this.props.navigation.navigate('HomePage');
-                    return responseJson;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -81,7 +77,7 @@ class Login extends Component {
                         containerStyle={{ width: '90%' }}
                         title="INICIAR SESIÓN"
                         titleStyle={{
-                            fontSize: '12px',
+                            fontSize: 12,
                             fontWeight: 'bold',
                         }}
                         onPress={() => this.handleLoginPress()}

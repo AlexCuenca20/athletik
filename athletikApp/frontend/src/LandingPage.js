@@ -14,7 +14,7 @@ export class LandingPage extends Component {
                         buttonStyle={{ backgroundColor: '#000' }}
                         containerStyle={{ width: '90%' }}
                         title="EMPEZAR"
-                        titleStyle={{ fontSize: '10px', fontWeight: 'bold' }}
+                        titleStyle={{ fontSize: 10, fontWeight: 'bold' }}
                         icon={{
                             name: 'arrow-right',
                             type: 'font-awesome',
@@ -27,7 +27,7 @@ export class LandingPage extends Component {
                     <Button
                         title="¿YA TIENES UNA CUENTA? INICIA SESIÓN"
                         titleStyle={{
-                            fontSize: '12px',
+                            fontSize: 12,
                             fontWeight: 'bold',
                             textDecorationLine: 'underline',
                             color: '#000'
