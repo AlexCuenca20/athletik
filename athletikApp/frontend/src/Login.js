@@ -41,7 +41,7 @@ class Login extends Component {
                 .then((response) => {
                     console.log(response);
                     if (response.ok) {
-                        this.props.navigation.navigate('HomePage');
+                        this.props.navigation.navigate('Home');
                         return;
                     }
                     throw new Error('Something went wrong');

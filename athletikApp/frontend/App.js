@@ -2,12 +2,22 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Login from './src/Login.js';
 import LandingPage from './src/LandingPage';
 import SignUp from './src/SignUp';
 import HomePage from './src/HomePage';
 import Activity from './src/Activity.js';
-import FooterTabs from './src/FooterTabs.js';
+
+function Home() {
+  const Tab = createBottomTabNavigator();
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="HomePage" component={HomePage} options={{ title: 'Inicio' }} />
+      <Tab.Screen name="Activity" component={Activity} options={{ title: 'Actividad' }} />
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -40,14 +50,9 @@ export default function App() {
             options={{ title: 'CREA TU CUENTA' }}
           />
           <Stack.Screen
-            name="HomePage"
-            component={HomePage}
-            options={{ title: 'Inicio' }}
-          />
-          <Stack.Screen
-            name="Activity"
-            component={Activity}
-            options={{ title: 'Actividad' }}
+            name="Home"
+            component={Home}
+            options={{ headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer >
