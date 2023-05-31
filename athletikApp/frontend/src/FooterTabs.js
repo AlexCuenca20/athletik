@@ -16,8 +16,8 @@ export class FooterTabs extends Component {
         })
     }
 
-    handleActivtyPress() {
-        this.props.navigation.navigate('Activity');
+    handleActivityPress() {
+        return this.props.navigation.navigate('Activity');
     }
 
     render() {
@@ -31,40 +31,40 @@ export class FooterTabs extends Component {
                         fontSize: 12,
                         fontWeight: 'bold',
                     }}
-                    onPress={() => this.handleLoginPress()}
+                    onPress={() => this.handleActivityPress()}
                 >
                 </Button>
                 <Button
-                    buttonStyle={{ backgroundColor: '#000' }}
-                    containerStyle={{ width: '25%', height: '100%' }}
+                    buttonStyle={{ backgroundColor: '#000', height: '100%' }}
+                    containerStyle={{ width: '25%' }}
                     title="Actividad"
                     titleStyle={{
                         fontSize: 12,
                         fontWeight: 'bold',
                     }}
-                    onPress={() => this.handleActivtyPress()}
+                    onPress={() => this.handleActivityPress()}
                 >
                 </Button>
                 <Button
-                    buttonStyle={{ backgroundColor: '#000' }}
+                    buttonStyle={{ backgroundColor: '#000', height: '100%' }}
                     containerStyle={{ width: '25%' }}
                     title="Perfil"
                     titleStyle={{
                         fontSize: 12,
                         fontWeight: 'bold',
                     }}
-                    onPress={() => this.handleLoginPress()}
+                    onPress={() => this.handleActivityPress()}
                 >
                 </Button>
                 <Button
-                    buttonStyle={{ backgroundColor: '#000' }}
+                    buttonStyle={{ backgroundColor: '#000', height: '100%' }}
                     containerStyle={{ width: '25%' }}
                     title="Mis Actividades"
                     titleStyle={{
                         fontSize: 12,
                         fontWeight: 'bold',
                     }}
-                    onPress={() => this.handleLoginPress()}
+                    onPress={() => this.handleActivityPress()}
                 >
                 </Button>
             </View >
