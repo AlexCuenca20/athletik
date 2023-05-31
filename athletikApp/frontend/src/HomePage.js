@@ -21,7 +21,6 @@ export class HomePage extends Component {
             <View style={styles.container}>
                 <View style={styles.upperContainer}>
                 </View>
-                <FooterTabs navigation={this.props.navigation}></FooterTabs>
             </View >
         )
     }

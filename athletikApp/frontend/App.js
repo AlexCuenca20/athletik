@@ -8,13 +8,48 @@ import LandingPage from './src/LandingPage';
 import SignUp from './src/SignUp';
 import HomePage from './src/HomePage';
 import Activity from './src/Activity.js';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function Home() {
   const Tab = createBottomTabNavigator();
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="HomePage" component={HomePage} options={{ title: 'Inicio' }} />
-      <Tab.Screen name="Activity" component={Activity} options={{ title: 'Actividad' }} />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'HomePage') {
+            iconName = focused
+              ? 'ios-information-circle'
+              : 'ios-information-circle-outline';
+          } else if (route.name === 'Activity') {
+            iconName = focused ? 'bicycle' : 'bicycle-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person-circle' : 'person-circle-outline';
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'green',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen
+        name="HomePage"
+        component={HomePage}
+        options={{ title: 'Inicio' }}
+      />
+      <Tab.Screen
+        name="Activity"
+        component={Activity}
+        options={{ title: 'Actividad' }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Activity}
+        options={{ title: 'Perfil' }}
+      />
     </Tab.Navigator>
   );
 }
