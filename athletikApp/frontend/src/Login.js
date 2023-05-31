@@ -109,4 +109,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    inputView: {
+        width: '100%'
+    }
 });
