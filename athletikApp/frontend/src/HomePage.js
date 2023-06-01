@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View, StyleSheet } from 'react-native';
-import FooterTabs from './FooterTabs';
 
 export class HomePage extends Component {
     constructor() {

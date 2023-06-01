@@ -75,10 +75,11 @@ class Login extends Component {
                     <Button
                         buttonStyle={{ backgroundColor: '#000' }}
                         containerStyle={{ width: '90%' }}
+                        size='lg'
                         title="INICIAR SESIÓN"
                         titleStyle={{
-                            fontSize: 12,
-                            fontWeight: 'bold',
+                            fontSize: 14,
+                            fontWeight: 'bold'
                         }}
                         onPress={() => this.handleLoginPress()}
                     >
@@ -98,16 +99,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     upperContainer: {
-        flex: 8,
+        flex: 10,
         width: '100%',
         alignItems: 'center',
         paddingTop: 40,
     },
     lowerContainer: {
-        flex: 2,
+        flex: 1,
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingBottom: 40
     },
     inputView: {
         width: '100%'

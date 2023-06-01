@@ -60,7 +60,7 @@ class SignUp extends Component {
             })
             .then((responseJson) => {
                 alert('registrado!!');
-                this.props.navigation.navigate('HomePage');
+                this.props.navigation.navigate('Home');
                 return responseJson;
             })
             .catch((error) => {
@@ -114,8 +114,9 @@ class SignUp extends Component {
                         buttonStyle={{ backgroundColor: '#000' }}
                         containerStyle={{ width: '90%' }}
                         title="ÚNETE"
+                        size='lg'
                         titleStyle={{
-                            fontSize: 12,
+                            fontSize: 14,
                             fontWeight: 'bold',
                         }}
                         onPress={() => this.handleSignUpPress()}
@@ -136,14 +137,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     upperContainer: {
-        flex: 8,
+        flex: 10,
         width: '100%',
         paddingTop: 20,
     },
     lowerContainer: {
-        flex: 2,
+        flex: 1,
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingBottom: 40
     },
 });

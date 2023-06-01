@@ -11,14 +11,15 @@ export class LandingPage extends Component {
                 </View>
                 <View style={styles.lowerContainer}>
                     <Button
-                        buttonStyle={{ backgroundColor: '#000' }}
+                        buttonStyle={{ backgroundColor: '#000', justifyContent: 'space-between' }}
                         containerStyle={{ width: '90%' }}
                         title="EMPEZAR"
-                        titleStyle={{ fontSize: 10, fontWeight: 'bold' }}
+                        size='lg'
+                        titleStyle={{ fontSize: 18, fontWeight: 'bold' }}
                         icon={{
-                            name: 'arrow-right',
+                            name: 'long-arrow-right',
                             type: 'font-awesome',
-                            size: 15,
+                            size: 25,
                             color: 'white',
                         }}
                         iconRight
@@ -32,6 +33,7 @@ export class LandingPage extends Component {
                             textDecorationLine: 'underline',
                             color: '#000'
                         }}
+                        containerStyle={{ paddingTop: 10 }}
                         type="clear"
                         onPress={() => this.props.navigation.navigate('Login')}
                     >
@@ -59,8 +61,10 @@ const styles = StyleSheet.create({
     },
     lowerContainer: {
         flex: 2,
+        width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingBottom: 40
     },
     image: { width: 220, height: 220 },
 })
