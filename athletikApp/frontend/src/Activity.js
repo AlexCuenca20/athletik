@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
-import FooterTabs from './FooterTabs';
 import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import haversine from 'haversine';
@@ -33,7 +32,13 @@ export class Activity extends Component {
             }),
             activityStarted: false,
             activityPaused: false,
-            timerRunning: false
+            timerRunning: false,
+            activityType: '',
+            speed: 0,
+            duration: 0,
+            maxSpeed: 0,
+            accumulatedDrop: 0,
+            averageSpeed: 0
         };
     }
 
@@ -105,32 +110,41 @@ export class Activity extends Component {
     }
 
     handleFinishPress() {
-
+        this.props.navigation.navigate('SaveActivityForm', {
+            type: this.state.activityType,
+            distance: this.state.distanceTravelled,
+            averageSpeed: this.state.averageSpeed,
+            duration: this.state.duration,
+            maxSpeed: this.state.maxSpeed,
+            accumulatedDrop: this.state.accumulatedDrop
+        });
     }
 
     Buttons = () => {
         if (this.state.activityPaused)
             return <View style={{ flexDirection: "row", }}>
                 <Button
-                    buttonStyle={{ backgroundColor: '#000' }}
-                    containerStyle={{ width: '50%', padding: 10 }}
-                    title='REANUDAR'
-                    titleStyle={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                    }}
-                    onPress={() => this.handleStartPress()}
-                >
-                </Button>
-                <Button
-                    buttonStyle={{ backgroundColor: '#000' }}
+                    buttonStyle={{ backgroundColor: '#d63a52' }}
                     containerStyle={{ width: '50%', padding: 10 }}
                     title='FINALIZAR'
+                    size='lg'
                     titleStyle={{
-                        fontSize: 12,
+                        fontSize: 14,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleFinishPress()}
+                >
+                </Button>
+                <Button
+                    buttonStyle={{ backgroundColor: '#4eae6e' }}
+                    containerStyle={{ width: '50%', padding: 10 }}
+                    title='REANUDAR'
+                    size='lg'
+                    titleStyle={{
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                    }}
+                    onPress={() => this.handleStartPress()}
                 >
                 </Button>
             </View>
@@ -140,8 +154,9 @@ export class Activity extends Component {
                     buttonStyle={{ backgroundColor: '#000' }}
                     containerStyle={{ width: '100%', padding: 10 }}
                     title={this.getButtonTitle()}
+                    size='lg'
                     titleStyle={{
-                        fontSize: 12,
+                        fontSize: 14,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleStartPress()}
@@ -240,7 +255,6 @@ export class Activity extends Component {
                     </View>
                     <this.Buttons />
                 </View>
-                <FooterTabs navigation={this.props.navigation}></FooterTabs>
             </View >
         )
     }

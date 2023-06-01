@@ -3,15 +3,36 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Login from './src/Login.js';
 import LandingPage from './src/LandingPage';
 import SignUp from './src/SignUp';
 import HomePage from './src/HomePage';
 import Activity from './src/Activity.js';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import SaveActivityForm from './src/SaveActivityForm.js';
+
+function ActivityStackScreen() {
+  const ActivityStack = createNativeStackNavigator();
+
+  return (
+    <ActivityStack.Navigator>
+      <ActivityStack.Screen
+        name="Activity"
+        component={Activity}
+        options={{ title: 'Actividad' }}
+      />
+      <ActivityStack.Screen
+        name="SaveActivityForm"
+        component={SaveActivityForm}
+        options={{ title: 'Guardar actividad' }}
+      />
+    </ActivityStack.Navigator>
+  );
+}
 
 function Home() {
   const Tab = createBottomTabNavigator();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -42,8 +63,8 @@ function Home() {
       />
       <Tab.Screen
         name="Activity"
-        component={Activity}
-        options={{ title: 'Actividad' }}
+        component={ActivityStackScreen}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Profile"

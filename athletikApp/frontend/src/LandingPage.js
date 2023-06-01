@@ -1,13 +1,19 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Image } from 'react-native'
-import { Button } from '@rneui/themed';
+import { Button, Text } from '@rneui/themed';
 
 export class LandingPage extends Component {
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.upperContainer}>
-                    <Image style={styles.image} source={require('../assets/logo.png')} />
+                    <Image style={styles.image} source={require('../assets/running.jpeg')} />
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.titleText}>ATHLETIK</Text>
+                    </View>
+                    <View style={styles.subtitleContainer}>
+                        <Text style={styles.subtitleText}>Keep Rolling!</Text>
+                    </View>
                 </View>
                 <View style={styles.lowerContainer}>
                     <Button
@@ -66,5 +72,33 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingBottom: 40
     },
-    image: { width: 220, height: 220 },
+    image: { width: '100%', height: '100%' },
+    titleContainer: {
+        position: 'absolute',
+        top: -375,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    subtitleContainer: {
+        position: 'absolute',
+        top: -280,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    titleText: {
+        fontSize: 70,
+        fontWeight: 'bold',
+        color: '#DAF7A6'
+    },
+    subtitleText: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: '#FFF'
+    }
 })
