@@ -7,17 +7,10 @@ export class SaveActivityForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // type: props.route.params.activityType,
-            // distance: props.route.params.distanceTravelled,
-            // averageSpeed: props.route.params.averageSpeed,
-            // maxSpeed: props.route.params.maxSpeed,
-            // accumulatedDrop: props.route.params.accumulatedDrop,
-            // duration: props.route.params.duration,
             ...props.route.params,
-            time: null,
             title: '',
             description: '',
-            isPost: false
+            isPost: true
         }
     }
 
@@ -54,16 +47,27 @@ export class SaveActivityForm extends Component {
         }
     }
 
+    handleDiscardPress() {
+        this.props.navigation.navigate('Activity', {
+            activityCanceled: true
+        });
+    }
+
+    handleSavePress() {
+        this.props.navigation.navigate('Activity', {
+            activityCanceled: true
+        });
+    }
+
     render() {
         return (
             <View style={styles.container}>
-
                 <View style={styles.upperContainer}>
                     <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
                         <Text h4 style={styles.sectionText}>Resumen</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: '100%', padding: 10 }}>
-                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                                <Text>00:00:00</Text>
+                        <View style={styles.row}>
+                            <View style={styles.col}>
+                                <Text>{this.state.duration}</Text>
                                 <Text style={{
                                     fontSize: 14,
                                     fontWeight: 'bold',
@@ -72,17 +76,17 @@ export class SaveActivityForm extends Component {
 
                             <Divider orientation='vertical'></Divider>
 
-                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                                <Text>23/10 14:30</Text>
+                            <View style={styles.col}>
+                                <Text>{this.state.time}</Text>
                                 <Text style={{
                                     fontSize: 14,
                                     fontWeight: 'bold',
                                 }}>Fecha</Text>
                             </View>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: '100%', padding: 10 }}>
-                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                                <Text>2,4 km</Text>
+                        <View style={styles.row}>
+                            <View style={styles.col}>
+                                <Text>{this.state.distance} km</Text>
                                 <Text style={{
                                     fontSize: 14,
                                     fontWeight: 'bold',
@@ -91,17 +95,17 @@ export class SaveActivityForm extends Component {
 
                             <Divider orientation='vertical'></Divider>
 
-                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                                <Text>300 m</Text>
+                            <View style={styles.col}>
+                                <Text>{this.state.accumulatedDrop} m</Text>
                                 <Text style={{
                                     fontSize: 14,
                                     fontWeight: 'bold',
                                 }}>Desnivel</Text>
                             </View>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: '100%', padding: 10 }}>
-                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                                <Text>5 km/h</Text>
+                        <View style={styles.row}>
+                            <View style={styles.col}>
+                                <Text>{this.state.averageSpeed} km/h</Text>
                                 <Text style={{
                                     fontSize: 14,
                                     fontWeight: 'bold',
@@ -110,8 +114,8 @@ export class SaveActivityForm extends Component {
 
                             <Divider orientation='vertical'></Divider>
 
-                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                                <Text>10 km/h</Text>
+                            <View style={styles.col}>
+                                <Text>{this.state.maxSpeed} km/h</Text>
                                 <Text style={{
                                     fontSize: 14,
                                     fontWeight: 'bold',
@@ -137,7 +141,7 @@ export class SaveActivityForm extends Component {
                         <CheckBox
                             center
                             title="No publicar actividad en la página de inicio ni el perfil"
-                            checked={this.state.isPost}
+                            checked={!this.state.isPost}
                             onPress={() => this.setIsPost(!this.state.isPost)}
                         />
                         <Text style={styles.sectionText}>Si no se publica la actividad, no se podrán añadir ni título ni descripción</Text>
@@ -164,7 +168,7 @@ export class SaveActivityForm extends Component {
                             </View>
                         </View>
                     </ScrollView>
-                </View>
+                </View >
                 <Divider></Divider>
                 <View style={styles.lowerContainer}>
                     <View style={{ flexDirection: "row", }}>
@@ -233,5 +237,14 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textAlign: 'left',
         fontWeight: 'bold',
+    },
+    row: {
+        flexDirection: "row",
+        justifyContent: 'space-between',
+        margin: 5
+    },
+    col: {
+        flex: 1,
+        alignItems: 'center'
     },
 });

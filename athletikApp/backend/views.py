@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import json
+from models import Activity
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -52,5 +53,36 @@ class UserView(View):
                 'ok': False,
                 'status_code': 401
             }
+
+        return JsonResponse(response, status=response['status_code'])
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ActivityView(View):
+
+    def post(self, request):
+
+        data = json.loads(request.body.decode("utf-8"))
+        type = data.get('name')
+        distance = data.get('username')
+        averageSpeed = data.get('password')
+        duration = data.get('email')
+        time = data.get('email')
+        maxSpeed = data.get('email')
+        routeCoordinates = data.get('email')
+
+        activity = Activity.objects.create(type=type,
+                                           distance=distance,
+                                           averageSpeed=averageSpeed,
+                                           duration=duration,
+                                           time=time,
+                                           avemaxSpeedrageSpeed=maxSpeed,
+                                           routeCoordinates=routeCoordinates)
+
+        response = {
+            'message': f'Created new activity with id: {activity.id}',
+            'ok': True,
+            'status_code': 201
+        }
 
         return JsonResponse(response, status=response['status_code'])
