@@ -43,7 +43,7 @@ function Home() {
             iconName = focused
               ? 'ios-information-circle'
               : 'ios-information-circle-outline';
-          } else if (route.name === 'Activity') {
+          } else if (route.name === 'ActivityHome') {
             iconName = focused ? 'bicycle' : 'bicycle-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person-circle' : 'person-circle-outline';
@@ -62,9 +62,9 @@ function Home() {
         options={{ title: 'Inicio' }}
       />
       <Tab.Screen
-        name="Activity"
+        name="ActivityHome"
         component={ActivityStackScreen}
-        options={{ headerShown: false }}
+        options={{ title: 'Actividad', headerShown: false }}
       />
       <Tab.Screen
         name="Profile"

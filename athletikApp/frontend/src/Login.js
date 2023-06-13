@@ -29,7 +29,7 @@ class Login extends Component {
 
     handleLoginPress() {
         if (this._validateInputs()) {
-            fetch('http://192.168.1.144:8000/api/v1/users/?username=' + this.state.username + '&password=' + this.state.password,
+            fetch('http://192.168.1.22:8000/api/v1/users/?username=' + this.state.username + '&password=' + this.state.password,
                 {
                     method: "GET",
                     mode: "cors",

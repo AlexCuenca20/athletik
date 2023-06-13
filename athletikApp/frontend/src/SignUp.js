@@ -42,7 +42,7 @@ class SignUp extends Component {
     }
 
     async registerUser() {
-        fetch('http://192.168.1.144:8000/api/v1/users/',
+        fetch('http://192.168.1.22:8000/api/v1/users/',
             {
                 method: "POST",
                 mode: "cors",

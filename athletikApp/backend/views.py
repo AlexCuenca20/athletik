@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.dateparse import parse_datetime, parse_duration
 import json
-from models import Activity
+from backend import models
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -63,21 +64,26 @@ class ActivityView(View):
     def post(self, request):
 
         data = json.loads(request.body.decode("utf-8"))
-        type = data.get('name')
-        distance = data.get('username')
-        averageSpeed = data.get('password')
-        duration = data.get('email')
-        time = data.get('email')
-        maxSpeed = data.get('email')
-        routeCoordinates = data.get('email')
+        print(data)
 
-        activity = Activity.objects.create(type=type,
-                                           distance=distance,
-                                           averageSpeed=averageSpeed,
-                                           duration=duration,
-                                           time=time,
-                                           avemaxSpeedrageSpeed=maxSpeed,
-                                           routeCoordinates=routeCoordinates)
+        type = data.get('type')
+        distance = int(float(data.get('distance')))
+        averageSpeed = float(data.get('averageSpeed'))
+        duration = parse_duration(data.get('duration'))
+        time = parse_datetime(data.get('time'))
+        maxSpeed = float(data.get('maxSpeed'))
+        accumulatedDrop = int(float(data.get('accumulatedDrop')))
+        routeCoordinates = data.get('routeCoordinates')
+
+        activity = models.Activity.objects.create(
+            type=type,
+            distance=distance,
+            averageSpeed=averageSpeed,
+            duration=duration,
+            time=time,
+            maxSpeed=maxSpeed,
+            accumulatedDrop=accumulatedDrop,
+            routeCoordinates=routeCoordinates)
 
         response = {
             'message': f'Created new activity with id: {activity.id}',

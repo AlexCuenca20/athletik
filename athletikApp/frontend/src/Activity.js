@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import haversine from 'haversine';
 import { Button } from '@rneui/themed';
 import { Stopwatch } from 'react-native-stopwatch-timer';
+import moment from 'moment';
 
 const { width, height } = Dimensions.get("window");
 
@@ -13,33 +14,64 @@ const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const INITIAL_STATE = {
+    latitude: LATITUDE,
+    longitude: LONGITUDE,
+    altitude: 0,
+    routeCoordinates: [],
+    distanceTravelled: 0,
+    prevLatLng: {},
+    coordinate: new AnimatedRegion({
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+    }),
+    activityStarted: false,
+    activityPaused: false,
+    activityCanceled: false,
+    timerRunning: false,
+    time: moment()
+        .format(),
+    activityType: 'mtb',
+    speed: 0,
+    duration: 0,
+    msecsDuration: 1,
+    maxSpeed: 0,
+    accumulatedDrop: 0,
+    averageSpeed: 0,
+    accumulatedSpeed: 0
+};
 
 export class Activity extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
-            altitude: 0,
-            routeCoordinates: [],
-            distanceTravelled: 0,
-            prevLatLng: {},
-            coordinate: new AnimatedRegion({
-                latitude: LATITUDE,
-                longitude: LONGITUDE,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-            }),
-            activityStarted: false,
-            activityPaused: false,
-            timerRunning: false,
-            activityType: '',
-            speed: 0,
-            duration: 0,
-            maxSpeed: 0,
-            accumulatedDrop: 0,
-            averageSpeed: 0
-        };
+        this.state = { ...INITIAL_STATE, ...props.route.params };
+    }
+
+    componentDidUpdate = (nextProps) => {
+        if (nextProps.route.params?.activityCanceled !== this.props.route.params?.activityCanceled) {
+            const prevCoordinate = this.state.coordinate;
+            this.setState({
+                routeCoordinates: [],
+                distanceTravelled: 0,
+                prevLatLng: {},
+                activityStarted: false,
+                activityPaused: false,
+                activityCanceled: true,
+                timerRunning: false,
+                time: moment()
+                    .format(),
+                activityType: '',
+                speed: 0,
+                duration: 0,
+                msecsDuration: 1,
+                maxSpeed: 0,
+                accumulatedDrop: 0,
+                averageSpeed: 0,
+                accumulatedSpeed: 0
+            })
+        }
     }
 
     async componentDidMount() {
@@ -48,6 +80,7 @@ export class Activity extends Component {
         if (status === 'granted')
             this.watchID = await Location.watchPositionAsync({},
                 location => {
+
                     const { coordinate, routeCoordinates, distanceTravelled } = this.state;
                     const { latitude, longitude, altitude, speed } = location.coords;
 
@@ -69,19 +102,41 @@ export class Activity extends Component {
                         latitude,
                         longitude,
                         altitude,
-                        speed,
                         routeCoordinates: routeCoordinates.concat([newCoordinate]),
                         distanceTravelled:
-                            distanceTravelled + this.calcDistance(newCoordinate),
-                        prevLatLng: newCoordinate
+                            parseFloat(
+                                distanceTravelled + this.calcDistance(newCoordinate)
+                            ).toFixed(2),
+                        prevLatLng: newCoordinate,
+                        maxSpeed: this.calcMaxSpeed(speed),
+                        accumulatedSpeed: this.state.accumulatedSpeed + speed,
+                        averageSpeed: this.calcAverageSpeed(speed)
                     });
                 }
+
             );
     }
 
     calcDistance = newLatLng => {
         const { prevLatLng } = this.state;
         return haversine(prevLatLng, newLatLng) || 0;
+    };
+
+    calcMaxSpeed = newSpeed => {
+        const { maxSpeed } = this.state;
+        let formattedSpeed;
+        if (newSpeed > maxSpeed) formattedSpeed = newSpeed
+        else formattedSpeed = maxSpeed
+
+        return parseFloat(formattedSpeed).toFixed(2);
+    };
+
+    calcAverageSpeed = newSpeed => {
+        const { accumulatedSpeed, msecsDuration } = this.state;
+
+        const averageSpeed = (accumulatedSpeed + newSpeed) / msecsDuration
+
+        return parseFloat(averageSpeed * 3.6).toFixed(2);
     };
 
     getMapRegion = () => ({
@@ -95,7 +150,8 @@ export class Activity extends Component {
         if (!this.state.activityStarted)
             this.setState({
                 activityStarted: true,
-                timerRunning: true
+                timerRunning: true,
+                activityCanceled: false
             });
         else if (!this.state.activityPaused)
             this.setState({
@@ -105,18 +161,20 @@ export class Activity extends Component {
         else if (this.state.activityPaused)
             this.setState({
                 activityPaused: false,
-                timerRunning: true
+                timerRunning: true,
             });
     }
 
     handleFinishPress() {
         this.props.navigation.navigate('SaveActivityForm', {
             type: this.state.activityType,
-            distance: this.state.distanceTravelled,
+            time: this.state.time,
+            distance: this.state.distanceTravelled * 1000,
             averageSpeed: this.state.averageSpeed,
             duration: this.state.duration,
             maxSpeed: this.state.maxSpeed,
-            accumulatedDrop: this.state.accumulatedDrop
+            accumulatedDrop: this.state.accumulatedDrop,
+            routeCoordinates: this.state.routeCoordinates
         });
     }
 
@@ -186,8 +244,10 @@ export class Activity extends Component {
                         <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 50 }}>
                             <Stopwatch
                                 start={this.state.timerRunning}
+                                reset={this.state.activityCanceled}
                                 options={options}
-                            // getTime={this.getFormattedTime}
+                                getTime={(d) => { this.state.duration = d; }}
+                                getMsecs={(ms) => { this.state.msecDuration = ms }}
                             />
                         </Text>
                     </View>
@@ -195,17 +255,17 @@ export class Activity extends Component {
                     <View style={styles.row}>
                         <View style={styles.col1}>
                             <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
-                                {parseFloat(this.state.distanceTravelled).toFixed(2)} km
+                                {this.state.distanceTravelled} km
                             </Text>
                         </View>
                         <View style={styles.col2}>
                             <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
-                                {parseFloat(this.state.altitude).toFixed(2)} m
+                                {parseFloat(this.state.accumulatedDrop).toFixed(2)} m
                             </Text>
                         </View>
                         <View style={styles.col3}>
                             <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
-                                {parseFloat(this.state.speed).toFixed(2) * 3.6} km/h
+                                {this.state.averageSpeed} km/h
                             </Text>
                         </View>
                     </View>

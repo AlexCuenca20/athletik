@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Input, Button, Divider, CheckBox, Text } from '@rneui/themed';
 import { PickerIOS } from '@react-native-picker/picker';
+import moment from 'moment';
 
 export class SaveActivityForm extends Component {
     constructor(props) {
@@ -38,7 +39,6 @@ export class SaveActivityForm extends Component {
         })
     }
 
-
     getButtonTitle() {
         if (!this.state.isPost) {
             return 'GUARDAR'
@@ -54,9 +54,43 @@ export class SaveActivityForm extends Component {
     }
 
     handleSavePress() {
-        this.props.navigation.navigate('Activity', {
-            activityCanceled: true
-        });
+        const apiRoute = this.state.isPost ?
+            'http://192.168.1.22:8000/api/v1/posts/' :
+            'http://192.168.1.22:8000/api/v1/activities/';
+
+        const requestBody = {
+            type: this.state.type,
+            distance: this.state.distance,
+            averageSpeed: this.state.averageSpeed,
+            duration: this.state.duration,
+            time: this.state.time,
+            maxSpeed: this.state.maxSpeed,
+            accumulatedDrop: this.state.accumulatedDrop,
+            routeCoordinates: this.state.routeCoordinates,
+            title: this.state.title,
+            description: this.state.description
+        };
+
+        fetch(apiRoute,
+            {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            }
+        )
+            .then((response) => {
+                if (response.ok) {
+                    this.props.navigation.navigate('HomePage');
+                    return;
+                }
+                throw new Error('Something went wrong');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     render() {
@@ -77,7 +111,7 @@ export class SaveActivityForm extends Component {
                             <Divider orientation='vertical'></Divider>
 
                             <View style={styles.col}>
-                                <Text>{this.state.time}</Text>
+                                <Text>{moment(this.state.time).format('D-M-Y, HH:mm')}</Text>
                                 <Text style={{
                                     fontSize: 14,
                                     fontWeight: 'bold',
@@ -198,7 +232,6 @@ export class SaveActivityForm extends Component {
                         </Button>
                     </View>
                 </View>
-
             </View >
         )
     }
