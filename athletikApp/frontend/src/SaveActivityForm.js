@@ -47,6 +47,11 @@ export class SaveActivityForm extends Component {
         }
     }
 
+    _validateInputs() {
+        const inputs = { title: this.state.title, description: this.state.description };
+        return Object.values(inputs).every((input) => input !== '')
+    }
+
     handleDiscardPress() {
         this.props.navigation.navigate('Activity', {
             activityCanceled: true
@@ -54,6 +59,8 @@ export class SaveActivityForm extends Component {
     }
 
     handleSavePress() {
+        if (this.state.isPost && !this._validateInputs()) return;
+
         const apiRoute = this.state.isPost ?
             'http://192.168.1.22:8000/api/v1/posts/' :
             'http://192.168.1.22:8000/api/v1/activities/';

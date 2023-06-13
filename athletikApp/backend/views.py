@@ -64,8 +64,6 @@ class ActivityView(View):
     def post(self, request):
 
         data = json.loads(request.body.decode("utf-8"))
-        print(data)
-
         type = data.get('type')
         distance = int(float(data.get('distance')))
         averageSpeed = float(data.get('averageSpeed'))
@@ -87,6 +85,43 @@ class ActivityView(View):
 
         response = {
             'message': f'Created new activity with id: {activity.id}',
+            'ok': True,
+            'status_code': 201
+        }
+
+        return JsonResponse(response, status=response['status_code'])
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class PostView(View):
+
+    def post(self, request):
+
+        data = json.loads(request.body.decode("utf-8"))
+        type = data.get('type')
+        distance = int(float(data.get('distance')))
+        averageSpeed = float(data.get('averageSpeed'))
+        duration = parse_duration(data.get('duration'))
+        time = parse_datetime(data.get('time'))
+        maxSpeed = float(data.get('maxSpeed'))
+        accumulatedDrop = int(float(data.get('accumulatedDrop')))
+        routeCoordinates = data.get('routeCoordinates')
+        title = data.get('title')
+        description = data.get('description')
+
+        post = models.Post.objects.create(type=type,
+                                          distance=distance,
+                                          averageSpeed=averageSpeed,
+                                          duration=duration,
+                                          time=time,
+                                          maxSpeed=maxSpeed,
+                                          accumulatedDrop=accumulatedDrop,
+                                          routeCoordinates=routeCoordinates,
+                                          title=title,
+                                          description=description)
+
+        response = {
+            'message': f'Created new post with id: {post.id}',
             'ok': True,
             'status_code': 201
         }
