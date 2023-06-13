@@ -72,6 +72,7 @@ class ActivityView(View):
         maxSpeed = float(data.get('maxSpeed'))
         accumulatedDrop = int(float(data.get('accumulatedDrop')))
         routeCoordinates = data.get('routeCoordinates')
+        user = request.user
 
         activity = models.Activity.objects.create(
             type=type,
@@ -81,7 +82,8 @@ class ActivityView(View):
             time=time,
             maxSpeed=maxSpeed,
             accumulatedDrop=accumulatedDrop,
-            routeCoordinates=routeCoordinates)
+            routeCoordinates=routeCoordinates,
+            user=user)
 
         response = {
             'message': f'Created new activity with id: {activity.id}',
@@ -108,6 +110,7 @@ class PostView(View):
         routeCoordinates = data.get('routeCoordinates')
         title = data.get('title')
         description = data.get('description')
+        user = request.user
 
         post = models.Post.objects.create(type=type,
                                           distance=distance,
@@ -118,7 +121,8 @@ class PostView(View):
                                           accumulatedDrop=accumulatedDrop,
                                           routeCoordinates=routeCoordinates,
                                           title=title,
-                                          description=description)
+                                          description=description,
+                                          user=user)
 
         response = {
             'message': f'Created new post with id: {post.id}',
@@ -127,3 +131,9 @@ class PostView(View):
         }
 
         return JsonResponse(response, status=response['status_code'])
+
+    def get(self, request):
+
+        allPosts = list(models.Post.objects.values())
+
+        return JsonResponse(allPosts, safe=False)

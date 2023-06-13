@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from jsonfield import JSONField
 
 
@@ -11,6 +12,12 @@ class Activity(models.Model):
     maxSpeed = models.FloatField()
     accumulatedDrop = models.IntegerField()
     routeCoordinates = JSONField()
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
 
 
 class Post(Activity):
