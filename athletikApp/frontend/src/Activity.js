@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Dimensions, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import haversine from 'haversine';
-import { Button } from '@rneui/themed';
+import { Button, Dialog } from '@rneui/themed';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import moment from 'moment';
 
@@ -40,7 +40,8 @@ const INITIAL_STATE = {
     maxSpeed: 0,
     accumulatedDrop: 0,
     averageSpeed: 0,
-    accumulatedSpeed: 0
+    accumulatedSpeed: 0,
+    errorDialogVisible: false
 };
 
 export class Activity extends Component {
@@ -51,7 +52,6 @@ export class Activity extends Component {
 
     componentDidUpdate = (nextProps) => {
         if (nextProps.route.params?.activityCanceled !== this.props.route.params?.activityCanceled) {
-            const prevCoordinate = this.state.coordinate;
             this.setState({
                 routeCoordinates: [],
                 distanceTravelled: 0,
@@ -70,7 +70,7 @@ export class Activity extends Component {
                 accumulatedDrop: 0,
                 averageSpeed: 0,
                 accumulatedSpeed: 0
-            })
+            });
         }
     }
 
@@ -166,6 +166,11 @@ export class Activity extends Component {
     }
 
     handleFinishPress() {
+        if (this.state.routeCoordinates === []) {
+            this.setErrorDialogVisible();
+            return;
+        }
+
         this.props.navigation.navigate('SaveActivityForm', {
             type: this.state.activityType,
             time: this.state.time,
@@ -176,6 +181,11 @@ export class Activity extends Component {
             accumulatedDrop: this.state.accumulatedDrop,
             routeCoordinates: this.state.routeCoordinates
         });
+    }
+
+    setErrorDialogVisible() {
+        Alert.alert('No se detectaron movimientos',
+            'No es posible finalizar esta actividad porque no pudimos detectar cambios en la ubicación')
     }
 
     Buttons = () => {
@@ -306,13 +316,6 @@ export class Activity extends Component {
                         />
 
                     </MapView>
-                    <View style={styles.buttonContainer}>
-                        <Button style={[styles.bubble, styles.button]}>
-                            <Text style={styles.bottomBarContent}>
-                                {this.state.latitude}, {this.state.longitude}
-                            </Text>
-                        </Button>
-                    </View>
                     <this.Buttons />
                 </View>
             </View >
