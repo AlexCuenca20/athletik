@@ -134,6 +134,14 @@ class PostView(View):
 
     def get(self, request):
 
-        allPosts = list(models.Post.objects.values())
+        allPosts = models.Post.objects.values()
 
-        return JsonResponse(allPosts, safe=False)
+        for post in allPosts:
+            user_id = post.get('user_id')
+            if (user_id != None):
+                post['username'] = User.objects.get(
+                    pk=post.get('user_id')).username
+
+        response = list(allPosts)
+
+        return JsonResponse(response, safe=False)
