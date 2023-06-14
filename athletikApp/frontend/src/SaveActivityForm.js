@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Input, Button, Divider, CheckBox, Text } from '@rneui/themed';
 import { PickerIOS } from '@react-native-picker/picker';
 import moment from 'moment';
@@ -90,6 +90,9 @@ export class SaveActivityForm extends Component {
         )
             .then((response) => {
                 if (response.ok) {
+                    this.props.navigation.navigate('Activity', {
+                        activityCanceled: true
+                    });
                     this.props.navigation.navigate('HomePage');
                     return;
                 }
@@ -103,7 +106,10 @@ export class SaveActivityForm extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.upperContainer}>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={styles.upperContainer}
+                    enabled keyboardVerticalOffset={120}>
                     <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
                         <Text h4 style={styles.sectionText}>Resumen</Text>
                         <View style={styles.row}>
@@ -209,7 +215,7 @@ export class SaveActivityForm extends Component {
                             </View>
                         </View>
                     </ScrollView>
-                </View >
+                </KeyboardAvoidingView>
                 <Divider></Divider>
                 <View style={styles.lowerContainer}>
                     <View style={{ flexDirection: "row", }}>
@@ -239,7 +245,7 @@ export class SaveActivityForm extends Component {
                         </Button>
                     </View>
                 </View>
-            </View >
+            </View>
         )
     }
 }
@@ -256,6 +262,7 @@ const styles = StyleSheet.create({
         flex: 8,
         width: '100%',
         paddingTop: 10,
+        paddingBottom: 20
     },
     lowerContainer: {
         flex: 1,
