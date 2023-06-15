@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl, TouchableWithoutFeedback, TouchableHighlight } from 'react-native';
 import { Avatar, Text, Divider } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
@@ -31,6 +31,9 @@ export class HomePage extends Component {
         await this._getAllPosts();
     }
 
+    handleOnPress(post) {
+        this.props.navigation.navigate('Post', { post })
+    }
 
     _onRefresh = async () => {
         this.setState({ refreshing: true });
@@ -66,70 +69,73 @@ export class HomePage extends Component {
         let postCards = [];
         for (post of this.state.posts) {
             postCards.unshift(
-                <View style={styles.cardBorder} key={post.id}>
-                    <View style={styles.postCard}>
-                        <View style={styles.row}>
-                            <Avatar
-                                size={50}
-                                rounded
-                                title={post.username?.charAt(0).toUpperCase()}
-                                containerStyle={{ backgroundColor: 'green' }}
-                            />
-                            <View style={styles.col}>
-                                <Text style={styles.h1}>
-                                    {post.username}
-                                </Text>
-                                <View style={styles.row}>
-                                    <Ionicons name={activityTypeByIcon[post.type]} size={20} style={{ marginRight: 5 }} />
-                                    <Text>
-                                        {moment(post.time).format('LLL')}
+                <TouchableHighlight key={post.id} underlayColor={'#light-grey'} onPress={this.handleOnPress.bind(this, post)}>
+                    <View style={styles.cardBorder}>
+                        <View style={styles.postCard}>
+                            <View style={styles.row}>
+                                <Avatar
+                                    size={50}
+                                    rounded
+                                    title={post.username?.charAt(0).toUpperCase()}
+                                    containerStyle={{ backgroundColor: 'green' }}
+                                />
+                                <View style={styles.col}>
+                                    <Text style={styles.h1}>
+                                        {post.username}
                                     </Text>
+                                    <View style={styles.row}>
+                                        <Ionicons name={activityTypeByIcon[post.type]} size={20} style={{ marginRight: 5 }} />
+                                        <Text>
+                                            {moment(post.time).format('LLL')}
+                                        </Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                        <View style={styles.row}>
-                            <Text style={styles.h2}>
-                                {post.title}
-                            </Text>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
-                                <Text>{post.distance} km</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Distancia</Text>
+                            <View style={styles.row}>
+                                <Text style={styles.h2}>
+                                    {post.title}
+                                </Text>
                             </View>
 
-                            <Divider orientation='vertical'></Divider>
+                            <View style={styles.row}>
+                                <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
+                                    <Text>{post.distance} km</Text>
+                                    <Text style={{
+                                        fontSize: 14,
+                                        fontWeight: 'bold',
+                                    }}>Distancia</Text>
+                                </View>
 
-                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
-                                <Text>{post.accumulatedDrop} m</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Desnivel</Text>
+                                <Divider orientation='vertical'></Divider>
+
+                                <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
+                                    <Text>{post.accumulatedDrop} m</Text>
+                                    <Text style={{
+                                        fontSize: 14,
+                                        fontWeight: 'bold',
+                                    }}>Desnivel</Text>
+                                </View>
                             </View>
+                            <Divider style={{ marginBottom: 5 }}></Divider>
                         </View>
-                        <Divider style={{ marginBottom: 5 }}></Divider>
+                        <MapView
+                            provider={PROVIDER_GOOGLE}
+                            style={styles.mapStyle}
+                            initialRegion={{
+                                latitude: post.routeCoordinates[0]?.latitude,
+                                longitude: post.routeCoordinates[0]?.longitude,
+                                latitudeDelta: LATITUDE_DELTA,
+                                longitudeDelta: LONGITUDE_DELTA
+                            }}
+                            mapType="standard"
+                            scrollEnabled={false}
+                            zoomEnabled={false}
+                            rotateEnabled={false}
+                        >
+                            <Polyline coordinates={post.routeCoordinates} strokeWidth={5} />
+                        </MapView>
                     </View>
-                    <MapView
-                        provider={PROVIDER_GOOGLE}
-                        style={styles.mapStyle}
-                        initialRegion={{
-                            latitude: post.routeCoordinates[0]?.latitude,
-                            longitude: post.routeCoordinates[0]?.longitude,
-                            latitudeDelta: LATITUDE_DELTA,
-                            longitudeDelta: LONGITUDE_DELTA
-                        }}
-                        mapType="standard"
-                        scrollEnabled={false}
-                        zoomEnabled={false}
-                    >
-                        <Polyline coordinates={post.routeCoordinates} strokeWidth={5} />
-                    </MapView>
-                </View >
+                </TouchableHighlight>
             );
         }
 
@@ -165,10 +171,10 @@ const styles = StyleSheet.create({
     cardBorder: {
         shadowColor: '#222',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
+        shadowOpacity: 0.2,
         shadowRadius: 2,
-        elevation: 5,
-        margin: 5,
+        elevation: 2,
+        marginBottom: 10,
         backgroundColor: '#fff',
     },
     row: {
@@ -184,7 +190,8 @@ const styles = StyleSheet.create({
     },
     h1: {
         fontSize: 16,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: 3
     },
     h2: {
         fontSize: 19,

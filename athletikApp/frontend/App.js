@@ -10,6 +10,7 @@ import SignUp from './src/SignUp';
 import HomePage from './src/HomePage';
 import Activity from './src/Activity.js';
 import SaveActivityForm from './src/SaveActivityForm.js';
+import Post from './src/Post.js';
 
 function ActivityStackScreen() {
   const ActivityStack = createNativeStackNavigator();
@@ -26,7 +27,31 @@ function ActivityStackScreen() {
         component={SaveActivityForm}
         options={{ title: 'Guardar actividad' }}
       />
+      <ActivityStack.Screen
+        name="Post"
+        component={Post}
+        options={{ title: 'Publicación' }}
+      />
     </ActivityStack.Navigator>
+  );
+}
+
+function HomePageStackScreen() {
+  const HomePageStack = createNativeStackNavigator();
+
+  return (
+    <HomePageStack.Navigator>
+      <HomePageStack.Screen
+        name="HomePage"
+        component={HomePage}
+        options={{ title: 'Inicio' }}
+      />
+      <HomePageStack.Screen
+        name="Post"
+        component={Post}
+        options={{ title: 'Publicación' }}
+      />
+    </HomePageStack.Navigator>
   );
 }
 
@@ -39,7 +64,7 @@ function Home() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'HomePage') {
+          if (route.name === 'HomePageStack') {
             iconName = focused
               ? 'ios-information-circle'
               : 'ios-information-circle-outline';
@@ -57,9 +82,9 @@ function Home() {
       })}
     >
       <Tab.Screen
-        name="HomePage"
-        component={HomePage}
-        options={{ title: 'Inicio' }}
+        name="HomePageStack"
+        component={HomePageStackScreen}
+        options={{ title: 'Inicio', headerShown: false }}
       />
       <Tab.Screen
         name="ActivityHome"
@@ -81,15 +106,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{
-          headerStyle: {
-            backgroundColor: '#DAF7A6',
-          },
-          headerTintColor: '#aaa',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }} >
+        <Stack.Navigator>
           <Stack.Screen
             name="LandingPage"
             component={LandingPage}
