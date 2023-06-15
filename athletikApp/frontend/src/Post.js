@@ -98,6 +98,8 @@ export class Post extends Component {
                             </MapView>
                         </View>
 
+                        <Divider style={{ marginBottom: 10, marginTop: -10 }}></Divider>
+
                         <View style={styles.row}>
                             <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
                                 <Text>{this.state.distance} km</Text>
@@ -151,6 +153,8 @@ export class Post extends Component {
                                 }}>Duración</Text>
                             </View>
                         </View>
+
+                        <Divider style={{ marginBottom: 10 }}></Divider>
                     </View>
                 </ScrollView >
             </View >
