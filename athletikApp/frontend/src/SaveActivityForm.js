@@ -54,16 +54,16 @@ export class SaveActivityForm extends Component {
 
     handleDiscardPress() {
         this.props.navigation.navigate('Activity', {
-            activityCanceled: true
+            refreshPage: true
         });
     }
 
-    handleSavePress() {
+    handleSavePress = () => {
         if (this.state.isPost && !this._validateInputs()) return;
 
         const apiRoute = this.state.isPost ?
-            'http://192.168.1.22:8000/api/v1/posts/' :
-            'http://192.168.1.22:8000/api/v1/activities/';
+            'http://192.168.1.19:8000/api/v1/posts/' :
+            'http://192.168.1.19:8000/api/v1/activities/';
 
         const requestBody = {
             type: this.state.type,
@@ -91,9 +91,11 @@ export class SaveActivityForm extends Component {
             .then((response) => {
                 if (response.ok) {
                     this.props.navigation.navigate('Activity', {
-                        activityCanceled: true
+                        refreshPage: true
                     });
-                    this.props.navigation.navigate('HomePage');
+                    this.props.navigation.navigate('HomePage', {
+                        refreshPage: true
+                    });
                     return;
                 }
                 throw new Error('Something went wrong');

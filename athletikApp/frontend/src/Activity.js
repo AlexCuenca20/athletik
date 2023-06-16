@@ -29,7 +29,7 @@ const INITIAL_STATE = {
     }),
     activityStarted: false,
     activityPaused: false,
-    activityCanceled: false,
+    refreshPage: false,
     timerRunning: false,
     time: moment()
         .format(),
@@ -50,15 +50,15 @@ export class Activity extends Component {
         this.state = { ...INITIAL_STATE, ...props.route.params };
     }
 
-    componentDidUpdate = (nextProps) => {
-        if (nextProps.route.params?.activityCanceled !== this.props.route.params?.activityCanceled) {
+    componentDidUpdate = (prevProps, prevState) => {
+        if (prevProps.route.params?.refreshPage !== this.props.route.params?.refreshPage) {
             this.setState({
                 routeCoordinates: [],
                 distanceTravelled: 0,
                 prevLatLng: {},
                 activityStarted: false,
                 activityPaused: false,
-                activityCanceled: true,
+                refreshPage: true,
                 timerRunning: false,
                 time: moment()
                     .format(),
@@ -71,6 +71,7 @@ export class Activity extends Component {
                 averageSpeed: 0,
                 accumulatedSpeed: 0
             });
+            this.props.route.params.refreshPage = false;
         }
     }
 
@@ -151,7 +152,7 @@ export class Activity extends Component {
             this.setState({
                 activityStarted: true,
                 timerRunning: true,
-                activityCanceled: false
+                refreshPage: false
             });
         else if (!this.state.activityPaused)
             this.setState({
@@ -254,7 +255,7 @@ export class Activity extends Component {
                         <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 50 }}>
                             <Stopwatch
                                 start={this.state.timerRunning}
-                                reset={this.state.activityCanceled}
+                                reset={this.state.refreshPage}
                                 options={options}
                                 getTime={(d) => { this.state.duration = d; }}
                                 getMsecs={(ms) => { this.state.msecDuration = ms }}

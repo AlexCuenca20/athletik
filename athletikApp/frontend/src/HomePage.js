@@ -28,7 +28,14 @@ export class HomePage extends Component {
     }
 
     async componentDidMount() {
-        await this._getAllPosts();
+        this._onRefresh();
+    }
+
+    componentDidUpdate = (prevProps, prevState) => {
+        if (prevProps.route.params?.postDeleted !== this.props.route.params?.postDeleted) {
+            this._onRefresh();
+            this.props.route.params.postDeleted = false;
+        }
     }
 
     handleOnPress(post) {
@@ -42,7 +49,7 @@ export class HomePage extends Component {
     }
 
     _getAllPosts() {
-        fetch('http://192.168.1.22:8000/api/v1/posts/',
+        fetch('http://192.168.1.19:8000/api/v1/posts/',
             {
                 method: "GET",
                 mode: "cors",
@@ -116,7 +123,6 @@ export class HomePage extends Component {
                                     }}>Desnivel</Text>
                                 </View>
                             </View>
-                            <Divider style={{ marginBottom: 5 }}></Divider>
                         </View>
                         <MapView
                             provider={PROVIDER_GOOGLE}
@@ -148,7 +154,7 @@ export class HomePage extends Component {
                             onRefresh={this._onRefresh} />
                     }
                 >
-                    {postCards}
+                    {postCards.length ? postCards : <Text>Looks like there is nothing to show here!</Text>}
                 </ScrollView>
             </View >
         )
