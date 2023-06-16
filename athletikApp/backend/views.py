@@ -145,3 +145,10 @@ class PostView(View):
         response = list(allPosts)
 
         return JsonResponse(response, safe=False)
+
+    def delete(self, request, id=None):
+        models.Post.objects.filter(id=id).delete()
+
+        data = {"message": "Post deleted"}
+
+        return JsonResponse(data)

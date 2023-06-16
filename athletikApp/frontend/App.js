@@ -3,6 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Button } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Login from './src/Login.js';
 import LandingPage from './src/LandingPage';
@@ -49,7 +50,12 @@ function HomePageStackScreen() {
       <HomePageStack.Screen
         name="Post"
         component={Post}
-        options={{ title: 'Publicación' }}
+        options={{
+          title: 'Publicación',
+          headerRight: () => (
+            <Button title="Post actions" />
+          ),
+        }}
       />
     </HomePageStack.Navigator>
   );

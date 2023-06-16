@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Avatar, Text, Divider } from '@rneui/themed';
+import { View, StyleSheet, ScrollView, ActionSheetIOS, Alert } from 'react-native';
+import { Avatar, Text, Divider, Button } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import 'moment/locale/es';
@@ -31,6 +31,81 @@ export class Post extends Component {
             routeCoordinates: []
         }
         moment.locale('es');
+    }
+
+    componentDidMount() {
+        this.props.navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    onPress={this.handleOnPress}
+                    color='white'
+                    containerStyle={{ marginRight: -10 }}
+                    iconPosition='right'
+                    icon={<Ionicons name='ellipsis-horizontal-outline' size={20} />}
+                />
+            ),
+        });
+    }
+
+    handleOnPress = () =>
+        ActionSheetIOS.showActionSheetWithOptions(
+            {
+                options: ['Cancelar', 'Editar publicación', 'Eliminar'],
+                destructiveButtonIndex: 2,
+                cancelButtonIndex: 0,
+                userInterfaceStyle: 'dark',
+            },
+            buttonIndex => {
+                if (buttonIndex === 0) {
+                    // cancel action
+                } else if (buttonIndex === 1) {
+                    this.handleModifyPost();
+                } else if (buttonIndex === 2) {
+                    this.createDeletePostDialog();
+                }
+            }
+        )
+
+    createDeletePostDialog() {
+        Alert.alert('¿Estás seguro?',
+            'Si eliminas esta actividad, se borrará de forma definitiva.', [
+            {
+                text: 'Eliminar',
+                onPress: () => this.handleDeletePost(),
+                style: 'destructive',
+            },
+            {
+                text: 'Cancelar',
+                style: 'cancel'
+            },
+        ])
+    }
+
+
+    handleDeletePost = () => {
+        fetch('http://192.168.1.19:8000/api/v1/posts/' + this.state.id,
+            {
+                method: "DELETE",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        )
+            .then((response) => {
+                if (response.ok) {
+                    this.props.navigation.navigate('HomePage', { postDeleted: true });
+                    return;
+                }
+                throw new Error('Something went wrong');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    handleModifyPost = () => {
+        this.props.navigation.navigate('SaveActivityForm', { ...post });
     }
 
     _parseDuration(duration) {
