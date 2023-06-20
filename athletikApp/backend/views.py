@@ -152,3 +152,36 @@ class PostView(View):
         data = {"message": "Post deleted"}
 
         return JsonResponse(data)
+
+    def put(self, request, id=None):
+        data = json.loads(request.body.decode("utf-8"))
+        type = data.get('type')
+        distance = int(float(data.get('distance')))
+        averageSpeed = float(data.get('averageSpeed'))
+        duration = parse_duration(data.get('duration'))
+        time = parse_datetime(data.get('time'))
+        maxSpeed = float(data.get('maxSpeed'))
+        accumulatedDrop = int(float(data.get('accumulatedDrop')))
+        routeCoordinates = data.get('routeCoordinates')
+        title = data.get('title')
+        description = data.get('description')
+
+        models.Post.objects.filter(id=id).update(
+            type=type,
+            distance=distance,
+            averageSpeed=averageSpeed,
+            duration=duration,
+            time=time,
+            maxSpeed=maxSpeed,
+            accumulatedDrop=accumulatedDrop,
+            routeCoordinates=routeCoordinates,
+            title=title,
+            description=description)
+
+        response = {
+            'message': f'Modified post with id: {id}',
+            'ok': True,
+            'status_code': 200
+        }
+
+        return JsonResponse(response, status=response['status_code'])

@@ -28,11 +28,6 @@ function ActivityStackScreen() {
         component={SaveActivityForm}
         options={{ title: 'Guardar actividad' }}
       />
-      <ActivityStack.Screen
-        name="Post"
-        component={Post}
-        options={{ title: 'Publicación' }}
-      />
     </ActivityStack.Navigator>
   );
 }
@@ -56,6 +51,11 @@ function HomePageStackScreen() {
             <Button title="Post actions" />
           ),
         }}
+      />
+      <HomePageStack.Screen
+        name="ModifyActivityForm"
+        component={SaveActivityForm}
+        options={{ title: 'Modificar actividad' }}
       />
     </HomePageStack.Navigator>
   );

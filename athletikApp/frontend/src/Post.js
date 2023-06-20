@@ -94,7 +94,7 @@ export class Post extends Component {
         )
             .then((response) => {
                 if (response.ok) {
-                    this.props.navigation.navigate('HomePage', { postDeleted: true });
+                    this.props.navigation.navigate('HomePage', { refreshPage: true });
                     return;
                 }
                 throw new Error('Something went wrong');
@@ -105,7 +105,20 @@ export class Post extends Component {
     }
 
     handleModifyPost = () => {
-        this.props.navigation.navigate('SaveActivityForm', { ...post });
+        const postToModify = {
+            id: this.state.id,
+            type: this.state.type,
+            time: this.state.time,
+            distance: this.state.distance,
+            averageSpeed: this.state.averageSpeed,
+            duration: this._parseDuration(this.state.duration),
+            maxSpeed: this.state.maxSpeed,
+            accumulatedDrop: this.state.accumulatedDrop,
+            routeCoordinates: this.state.routeCoordinates,
+            title: this.state.title,
+            description: this.state.description
+        };
+        this.props.navigation.navigate('ModifyActivityForm', { ...postToModify, modifyingPost: true });
     }
 
     _parseDuration(duration) {

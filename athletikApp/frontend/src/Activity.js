@@ -180,7 +180,8 @@ export class Activity extends Component {
             duration: this.state.duration,
             maxSpeed: this.state.maxSpeed,
             accumulatedDrop: this.state.accumulatedDrop,
-            routeCoordinates: this.state.routeCoordinates
+            routeCoordinates: this.state.routeCoordinates,
+            modifyingPost: false
         });
     }
 

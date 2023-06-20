@@ -32,9 +32,9 @@ export class HomePage extends Component {
     }
 
     componentDidUpdate = (prevProps, prevState) => {
-        if (prevProps.route.params?.postDeleted !== this.props.route.params?.postDeleted) {
+        if (prevProps.route.params?.refreshPage !== this.props.route.params?.refreshPage) {
             this._onRefresh();
-            this.props.route.params.postDeleted = false;
+            this.props.route.params.refreshPage = false;
         }
     }
 

@@ -3,14 +3,13 @@ import { View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native
 import { Input, Button, Divider, CheckBox, Text } from '@rneui/themed';
 import { PickerIOS } from '@react-native-picker/picker';
 import moment from 'moment';
+import { CommonActions } from '@react-navigation/native';
 
 export class SaveActivityForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             ...props.route.params,
-            title: '',
-            description: '',
             isPost: true
         }
     }
@@ -40,7 +39,7 @@ export class SaveActivityForm extends Component {
     }
 
     getButtonTitle() {
-        if (!this.state.isPost) {
+        if (!this.state.isPost || this.props.route.params?.modifyingPost) {
             return 'GUARDAR'
         } else {
             return 'PUBLICAR'
@@ -53,17 +52,27 @@ export class SaveActivityForm extends Component {
     }
 
     handleDiscardPress() {
-        this.props.navigation.navigate('Activity', {
-            refreshPage: true
+        const setParamsAction = CommonActions.setParams({
+            params: { refreshPage: true }
         });
+        const backAction = CommonActions.goBack();
+
+        this.props.navigation.dispatch(setParamsAction);
+        this.props.navigation.dispatch(backAction);
     }
 
     handleSavePress = () => {
         if (this.state.isPost && !this._validateInputs()) return;
 
-        const apiRoute = this.state.isPost ?
-            'http://192.168.1.19:8000/api/v1/posts/' :
-            'http://192.168.1.19:8000/api/v1/activities/';
+        let apiRoute = 'http://192.168.1.19:8000/api/v1/activities/',
+            apiMethod = 'POST';
+        if (this.state.isPost) {
+            apiRoute = 'http://192.168.1.19:8000/api/v1/posts/';
+            if (this.props.route.params?.modifyingPost) {
+                apiRoute += this.props.route.params.id + '/';
+                apiMethod = 'PUT'
+            }
+        }
 
         const requestBody = {
             type: this.state.type,
@@ -80,7 +89,7 @@ export class SaveActivityForm extends Component {
 
         fetch(apiRoute,
             {
-                method: "POST",
+                method: apiMethod,
                 mode: "cors",
                 headers: {
                     "Content-Type": "application/json",
@@ -186,15 +195,16 @@ export class SaveActivityForm extends Component {
                             <PickerIOS.Item label="Caminata" value="walk" />
                         </PickerIOS>
 
-                        <Text h4 style={styles.sectionText}>Visibilidad</Text>
-                        <CheckBox
-                            center
-                            title="No publicar actividad en la página de inicio ni el perfil"
-                            checked={!this.state.isPost}
-                            onPress={() => this.setIsPost(!this.state.isPost)}
-                        />
-                        <Text style={styles.sectionText}>Si no se publica la actividad, no se podrán añadir ni título ni descripción</Text>
-
+                        {this.props.route.params?.modifyingPost ? null : <View>
+                            <Text h4 style={styles.sectionText}>Visibilidad</Text>
+                            <CheckBox
+                                center
+                                title="No publicar actividad en la página de inicio ni el perfil"
+                                checked={!this.state.isPost}
+                                onPress={() => this.setIsPost(!this.state.isPost)}
+                            />
+                            <Text style={styles.sectionText}>Si no se publica la actividad, no se podrán añadir ni título ni descripción</Text>
+                        </View>}
                         <Text h4 style={styles.sectionText}>Publicación</Text>
                         <View aria-disabled={!this.state.isPost} style={styles.detailsSection}>
                             <View style={styles.inputView}>
@@ -202,6 +212,7 @@ export class SaveActivityForm extends Component {
                                     placeholder="Título"
                                     editable={this.state.isPost}
                                     selectTextOnFocus={this.state.isPost}
+                                    defaultValue={this.state.title}
                                     onChangeText={(title) => this.setTitle(title)}
                                 />
                             </View>
@@ -212,6 +223,7 @@ export class SaveActivityForm extends Component {
                                     multiline={true}
                                     editable={this.state.isPost}
                                     selectTextOnFocus={this.state.isPost}
+                                    defaultValue={this.state.description}
                                     onChangeText={(description) => this.setDescription(description)}
                                 />
                             </View>
