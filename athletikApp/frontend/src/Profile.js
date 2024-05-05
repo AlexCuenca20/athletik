@@ -1,0 +1,283 @@
+import React, { Component } from 'react'
+import { View, StyleSheet, ScrollView, ActionSheetIOS, Alert } from 'react-native';
+import { Avatar, Text, Divider, Button } from '@rneui/themed';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
+import 'moment/locale/es';
+import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
+import { CommonActions } from '@react-navigation/native';
+
+const activityTypeByIcon = {
+    mtb: 'bicycle',
+    bic: 'bicycle',
+    hik: 'golf',
+    run: 'fitness',
+    walk: 'walk-outline'
+}
+
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = 0.0421;
+
+export class Profile extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    handleOnPress = () =>
+        ActionSheetIOS.showActionSheetWithOptions(
+            {
+                options: ['Cancelar', 'Editar publicación', 'Eliminar'],
+                destructiveButtonIndex: 2,
+                cancelButtonIndex: 0,
+                userInterfaceStyle: 'dark',
+            },
+            buttonIndex => {
+                if (buttonIndex === 0) {
+                    // cancel action
+                } else if (buttonIndex === 1) {
+                    this.handleModifyPost();
+                } else if (buttonIndex === 2) {
+                    this.createDeletePostDialog();
+                }
+            }
+        )
+
+    handleDeletePost = () => {
+        fetch('http://192.168.1.22:8000/api/v1/users/' + this.state.id,
+            {
+                method: "DELETE",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        )
+            .then((response) => {
+                if (response.ok) {
+                    const setParamsAction = CommonActions.setParams({
+                        params: { refreshPage: true }
+                    });
+                    const backAction = CommonActions.goBack();
+
+                    this.props.navigation.dispatch(setParamsAction);
+                    this.props.navigation.dispatch(backAction);
+                    return;
+                }
+                throw new Error('Something went wrong');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    handleModifyPost = () => {
+        const postToModify = {
+            id: this.state.id,
+            type: this.state.type,
+            time: this.state.time,
+            distance: this.state.distance,
+            averageSpeed: this.state.averageSpeed,
+            duration: this._parseDuration(this.state.duration),
+            maxSpeed: this.state.maxSpeed,
+            accumulatedDrop: this.state.accumulatedDrop,
+            routeCoordinates: this.state.routeCoordinates,
+            title: this.state.title,
+            description: this.state.description
+        };
+        this.props.navigation.navigate('ModifyActivityForm', { ...postToModify, modifyingPost: true });
+    }
+
+    _getProfileInfo() {
+        fetch('http://192.168.1.22:8000/api/v1/users/',
+            {
+                method: "GET",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        )
+            .then((response) => {
+                if (response.ok) {
+                    this.setState()
+                    return;
+                }
+                throw new Error('Something went wrong');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <ScrollView>
+                    <View style={styles.postCard}>
+                        <View style={styles.row}>
+                            <Avatar
+                                size={50}
+                                rounded
+                                title={this.state.username?.charAt(0).toUpperCase()}
+                                containerStyle={{ backgroundColor: 'green' }}
+                            />
+                            <View style={styles.col}>
+                                <Text style={styles.h1}>
+                                    {this.state.username}
+                                </Text>
+                                <View style={styles.row}>
+                                    <Ionicons name={activityTypeByIcon[this.state.type]} size={20} style={{ marginRight: 5 }} />
+                                    <Text>
+                                        {moment(this.state.time).format('LLL')}
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.row}>
+                            <Text style={styles.h2}>
+                                {this.state.title}
+                            </Text>
+                        </View>
+                        <View style={{
+                            flexDirection: "row",
+                            justifyContent: 'flex-start',
+                            marginBottom: 0,
+                            alignItems: 'center'
+                        }}>
+                            <Text style={styles.h3}>
+                                {this.state.description}
+                            </Text>
+                        </View>
+
+                        <View style={styles.row}>
+                            <MapView
+                                provider={PROVIDER_GOOGLE}
+                                style={styles.mapStyle}
+                                initialRegion={this.state.initialRegion}
+                                mapType="standard"
+                                scrollEnabled={false}
+                                zoomEnabled={false}
+                                rotateEnabled={false}
+                            >
+                                <Polyline
+                                    coordinates={this.state.routeCoordinates}
+                                    strokeColor="#4A80F5"
+                                    strokeWidth={2} />
+                            </MapView>
+                        </View>
+
+                        <Divider style={{ marginBottom: 10, marginTop: -10 }}></Divider>
+
+                        <View style={styles.row}>
+                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
+                                <Text>{this.state.distance} km</Text>
+                                <Text style={{
+                                    fontSize: 14,
+                                    fontWeight: 'bold',
+                                }}>Distancia</Text>
+                            </View>
+
+                            <Divider orientation='vertical'></Divider>
+
+                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
+                                <Text>{this.state.accumulatedDrop} m</Text>
+                                <Text style={{
+                                    fontSize: 14,
+                                    fontWeight: 'bold',
+                                }}>Desnivel</Text>
+                            </View>
+                        </View>
+
+                        <Divider style={{ marginBottom: 10 }}></Divider>
+
+                        <View style={styles.row}>
+                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
+                                <Text>{this.state.averageSpeed} km/h</Text>
+                                <Text style={{
+                                    fontSize: 14,
+                                    fontWeight: 'bold',
+                                }}>Velocidad media</Text>
+                            </View>
+
+                            <Divider orientation='vertical'></Divider>
+
+                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
+                                <Text>{this.state.maxSpeed} km/h</Text>
+                                <Text style={{
+                                    fontSize: 14,
+                                    fontWeight: 'bold',
+                                }}>Velocidad máxima</Text>
+                            </View>
+                        </View>
+
+                        <Divider style={{ marginBottom: 10 }}></Divider>
+
+                        <View style={styles.row}>
+                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
+                                <Text>{this._parseDuration(this.state.duration)}</Text>
+                                <Text style={{
+                                    fontSize: 14,
+                                    fontWeight: 'bold',
+                                }}>Duración</Text>
+                            </View>
+                        </View>
+
+                        <Divider style={{ marginBottom: 10 }}></Divider>
+                    </View>
+                </ScrollView >
+            </View >
+        )
+    }
+}
+
+export default Profile
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'column',
+        backgroundColor: 'light-grey',
+    },
+    postCard: {
+        width: '100%',
+        padding: 10,
+        paddingBottom: 0,
+        backgroundColor: '#fff',
+        shadowColor: '#222',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 2,
+        marginBottom: 5,
+    },
+    row: {
+        flexDirection: "row",
+        justifyContent: 'flex-start',
+        marginBottom: 10,
+        alignItems: 'center'
+    },
+    col: {
+        flex: 1,
+        marginLeft: 10,
+        marginTop: 5,
+    },
+    h1: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 3
+    },
+    h2: {
+        fontSize: 19,
+        fontWeight: '600',
+    },
+    h3: {
+        fontSize: 16,
+        fontWeight: '400',
+    },
+    mapStyle: {
+        width: '105.5%',
+        height: 250,
+        marginLeft: -10,
+        marginTop: 10,
+        marginBottom: 10
+    },
+});
