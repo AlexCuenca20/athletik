@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView, RefreshControl, TouchableWithoutFeedback, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl, TouchableHighlight } from 'react-native';
 import { Avatar, Text, Divider } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
@@ -18,8 +18,8 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0421;
 
 export class HomePage extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             posts: [],
             refreshing: false
@@ -32,14 +32,15 @@ export class HomePage extends Component {
     }
 
     componentDidUpdate = (prevProps, prevState) => {
-        if (prevProps.route.params?.refreshPage !== this.props.route.params?.refreshPage) {
+        if (prevProps.route?.params?.refreshPage !== this.props.route?.params?.refreshPage) {
             this._onRefresh();
             this.props.route.params.refreshPage = false;
         }
     }
 
     handleOnPress(post) {
-        this.props.navigation.navigate('Post', { post })
+        const route = this.props.userId ? 'ProfilePost' : 'Post';
+        this.props.navigation.navigate(route, { post })
     }
 
     _onRefresh = async () => {
@@ -49,7 +50,10 @@ export class HomePage extends Component {
     }
 
     _getAllPosts() {
-        fetch('http://192.168.1.19:8000/api/v1/posts/',
+        let apiRoute = 'http://172.20.10.5:8000/api/v1/posts/';
+        if (this.props.userId) apiRoute += this.props.userId;
+
+        fetch(apiRoute,
             {
                 method: "GET",
                 mode: "cors",
@@ -154,7 +158,13 @@ export class HomePage extends Component {
                             onRefresh={this._onRefresh} />
                     }
                 >
-                    {postCards.length ? postCards : <Text>Looks like there is nothing to show here!</Text>}
+                    {
+                        postCards.length ? postCards :
+                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                <Ionicons name='megaphone-outline' size={200} style={{ marginTop: 20 }} />
+                                <Text h4 style={{ textAlign: 'center' }}>Parece que esto está muy tranquilo... Nadie ha publicado actividades aún</Text>
+                            </View>
+                    }
                 </ScrollView>
             </View >
         )
@@ -167,6 +177,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         backgroundColor: 'light-grey',
+        height: '100%'
     },
     postCard: {
         width: '100%',

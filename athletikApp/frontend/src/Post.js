@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import 'moment/locale/es';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
+import { CommonActions } from '@react-navigation/native';
 
 const activityTypeByIcon = {
     mtb: 'bicycle',
@@ -34,17 +35,15 @@ export class Post extends Component {
     }
 
     componentDidMount() {
-        this.props.navigation.setOptions({
-            headerRight: () => (
-                <Button
-                    onPress={this.handleOnPress}
-                    color='white'
-                    containerStyle={{ marginRight: -10 }}
-                    iconPosition='right'
-                    icon={<Ionicons name='ellipsis-horizontal-outline' size={20} />}
-                />
-            ),
-        });
+        if (this.props.userId)
+            this.props.navigation.setOptions({
+                headerRight: () => (
+                    <Button
+                        onPress={this.handleOnPress}
+
+                    />
+                ),
+            });
     }
 
     handleOnPress = () =>
@@ -94,7 +93,13 @@ export class Post extends Component {
         )
             .then((response) => {
                 if (response.ok) {
-                    this.props.navigation.navigate('HomePage', { refreshPage: true });
+                    const setParamsAction = CommonActions.setParams({
+                        params: { refreshPage: true }
+                    });
+                    const backAction = CommonActions.goBack();
+
+                    this.props.navigation.dispatch(setParamsAction);
+                    this.props.navigation.dispatch(backAction);
                     return;
                 }
                 throw new Error('Something went wrong');
