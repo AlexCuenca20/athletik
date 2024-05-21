@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Input, Button, Divider } from '@rneui/themed';
+import { BACKEND_URL } from '../config';
+
 
 class Login extends Component {
     constructor() {
@@ -29,7 +31,7 @@ class Login extends Component {
 
     handleLoginPress() {
         if (this._validateInputs()) {
-            fetch('http://192.168.1.19:8000/api/v1/users/?username=' + this.state.username + '&password=' + this.state.password,
+            fetch(BACKEND_URL + '/api/v1/users/?username=' + this.state.username + '&password=' + this.state.password,
                 {
                     method: "GET",
                     mode: "cors",

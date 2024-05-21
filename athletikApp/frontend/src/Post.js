@@ -6,6 +6,7 @@ import moment from 'moment';
 import 'moment/locale/es';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { CommonActions } from '@react-navigation/native';
+import { BACKEND_URL } from '../config';
 
 const activityTypeByIcon = {
     mtb: 'bicycle',
@@ -82,7 +83,7 @@ export class Post extends Component {
 
 
     handleDeletePost = () => {
-        fetch('http://192.168.1.19:8000/api/v1/posts/' + this.state.id,
+        fetch(BACKEND_URL + '/api/v1/posts/' + this.state.id,
             {
                 method: "DELETE",
                 mode: "cors",
@@ -176,7 +177,7 @@ export class Post extends Component {
 
                         <View style={styles.row}>
                             <MapView
-                                provider={PROVIDER_GOOGLE}
+                                // provider={PROVIDER_GOOGLE}
                                 style={styles.mapStyle}
                                 initialRegion={this.state.initialRegion}
                                 mapType="standard"

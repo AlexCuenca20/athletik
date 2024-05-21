@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Input, Button, Divider, CheckBox, Text } from '@rneui/themed';
 import { PickerIOS } from '@react-native-picker/picker';
 import moment from 'moment';
 import { CommonActions } from '@react-navigation/native';
+import { BACKEND_URL } from '../config';
 
 export class SaveActivityForm extends Component {
     constructor(props) {
@@ -64,10 +65,10 @@ export class SaveActivityForm extends Component {
     handleSavePress = () => {
         if (this.state.isPost && !this._validateInputs()) return;
 
-        let apiRoute = 'http://192.168.1.19:8000/api/v1/activities/',
+        let apiRoute = BACKEND_URL + '/api/v1/activities/',
             apiMethod = 'POST';
         if (this.state.isPost) {
-            apiRoute = 'http://192.168.1.19:8000/api/v1/posts/';
+            apiRoute = BACKEND_URL + '/api/v1/posts/';
             if (this.props.route.params?.modifyingPost) {
                 apiRoute += this.props.route.params.id + '/';
                 apiMethod = 'PUT'

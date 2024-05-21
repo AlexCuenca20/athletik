@@ -24,7 +24,9 @@ SECRET_KEY = 'django-insecure-(hzk7!!a@4+$ph!f!eu0r!y8%-j=-t1!#5+2=k^m4%41=6(_p!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.19']
+BACKEND_URL = '192.168.1.150'
+
+ALLOWED_HOSTS = [BACKEND_URL]
 
 # Application definition
 
@@ -43,7 +45,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware'
 ]
 
 ROOT_URLCONF = 'athletikApp.urls'
@@ -121,7 +124,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = ('http://localhost:3000', 'https://85.60.145.78',
-                         'http://192.168.1.19')
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000', 'http://localhost:8000', 'http://' + BACKEND_URL + ':8000']
 
-CORS_ALLOW_METHODS = ('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']

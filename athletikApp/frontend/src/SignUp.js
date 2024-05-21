@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Input, Button, Divider } from '@rneui/themed';
+import { BACKEND_URL } from '../config';
 
 class SignUp extends Component {
     constructor() {
@@ -42,7 +43,7 @@ class SignUp extends Component {
     }
 
     async registerUser() {
-        fetch('http://192.168.1.19:8000/api/v1/users/',
+        fetch(BACKEND_URL + '/api/v1/users/',
             {
                 method: "POST",
                 mode: "cors",

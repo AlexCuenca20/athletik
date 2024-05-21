@@ -5,6 +5,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import 'moment/locale/es';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
+import { BACKEND_URL } from '../config';
+
 
 const activityTypeByIcon = {
     mtb: 'bicycle',
@@ -50,7 +52,7 @@ export class HomePage extends Component {
     }
 
     _getAllPosts() {
-        let apiRoute = 'http://172.20.10.5:8000/api/v1/posts/';
+        let apiRoute = BACKEND_URL + '/api/v1/posts/';
         if (this.props.userId) apiRoute += this.props.userId;
 
         fetch(apiRoute,
@@ -129,7 +131,7 @@ export class HomePage extends Component {
                             </View>
                         </View>
                         <MapView
-                            provider={PROVIDER_GOOGLE}
+                            // provider={PROVIDER_GOOGLE}
                             style={styles.mapStyle}
                             initialRegion={{
                                 latitude: post.routeCoordinates[0]?.latitude,
