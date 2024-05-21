@@ -103,7 +103,7 @@ export class Post extends Component {
                     this.props.navigation.dispatch(backAction);
                     return;
                 }
-                throw new Error('Something went wrong');
+                throw new Error(response.message);
             })
             .catch((error) => {
                 console.log(error);

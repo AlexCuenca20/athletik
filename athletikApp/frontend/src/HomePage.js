@@ -68,7 +68,7 @@ export class HomePage extends Component {
                 if (response.ok) {
                     return response.json();
                 }
-                throw new Error('Something went wrong');
+                throw new Error(response.message);
             })
             .then((data) => {
                 this.setState({ posts: data })

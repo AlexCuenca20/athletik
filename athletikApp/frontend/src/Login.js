@@ -45,7 +45,7 @@ class Login extends Component {
                         this.props.navigation.navigate('Home');
                         return;
                     }
-                    throw new Error('Something went wrong');
+                    throw new Error(response.message);
                 })
                 .catch((error) => {
                     console.log(error);

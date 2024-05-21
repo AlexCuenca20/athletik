@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Dimensions, Text, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Alert, Platform } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import haversine from 'haversine';
@@ -301,7 +301,7 @@ export class Activity extends Component {
                 </View>
                 <View style={styles.lowerContainer}>
                     <MapView
-                        provider={PROVIDER_GOOGLE}
+                        // provider={PROVIDER_GOOGLE}
                         style={styles.mapStyle}
                         showUserLocation
                         followUserLocation
