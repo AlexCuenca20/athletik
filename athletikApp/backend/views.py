@@ -3,6 +3,9 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication
+from rest_framework.views import APIView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.dateparse import parse_datetime, parse_duration
@@ -11,7 +14,8 @@ from backend import models
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class UserView(View):
+class UserView(APIView):
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
 
     def post(self, request):
 
@@ -25,9 +29,11 @@ class UserView(View):
             username=username, email=email, password=password, first_name=fullname
         )
         login(request, user)
+        token = Token.objects.create(user=user)
 
         response = {
             "message": f"Created new user with username: {user.username}",
+            "token": token,
             "ok": True,
             "status_code": 201,
         }
@@ -36,20 +42,16 @@ class UserView(View):
 
     def get(self, request):
 
-        username = request.GET.get("username")
-        password = request.GET.get("password")
-
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
+        if request.user.is_authenticated:
+            login(request, request.user)
             response = {
-                "message": f"Logged in as: {user.username}",
+                "message": f"Logged in as: {request.user}",
                 "ok": True,
                 "status_code": 200,
             }
         else:
             response = {
-                "message": "Incorrect username or password",
+                "message": "Incorrect token",
                 "ok": False,
                 "status_code": 401,
             }
@@ -58,7 +60,8 @@ class UserView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class ActivityView(View):
+class ActivityView(APIView):
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
 
     def post(self, request):
 
@@ -102,7 +105,8 @@ class ActivityView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class PostView(View):
+class PostView(APIView):
+    authentication_classes = [TokenAuthentication, BasicAuthentication]
 
     def post(self, request):
 
