@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, ScrollView, RefreshControl, TouchableHighlight } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import { Avatar, Text, Divider } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
@@ -51,9 +52,11 @@ export class HomePage extends Component {
         this.setState({ refreshing: false });
     }
 
-    _getAllPosts() {
+    async _getAllPosts() {
         let apiRoute = BACKEND_URL + '/api/v1/posts/';
         if (this.props.userId) apiRoute += this.props.userId;
+
+        const token = await SecureStore.getItemAsync('secure_token');
 
         fetch(apiRoute,
             {
@@ -61,14 +64,16 @@ export class HomePage extends Component {
                 mode: "cors",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": "Token " + token,
                 },
             }
         )
-            .then((response) => {
+            .then(async (response) => {
                 if (response.ok) {
-                    return response.json();
+                    parsedResponse = JSON.parse(await response.text());
+                    return parsedResponse;
                 }
-                throw new Error(response.message);
+                throw new Error(JSON.parse(await response.text()).message);
             })
             .then((data) => {
                 this.setState({ posts: data })

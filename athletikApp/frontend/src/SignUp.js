@@ -53,16 +53,18 @@ class SignUp extends Component {
                 body: JSON.stringify(this.state),
             }
         )
-            .then((response) => {
+            .then(async (response) => {
                 if (response.ok) {
-                    return response.json();
+                    parsedTokenResponse = JSON.parse(await tokenResponse.text());
+                    await SecureStore.setItemAsync('secure_token', parsedTokenResponse.token);
+
+                    return;
                 }
-                throw new Error(response.message);
+                throw new Error(JSON.parse(await response.text()).message);
             })
-            .then((responseJson) => {
-                alert('registrado!!');
+            .finally(() => {
                 this.props.navigation.navigate('Home');
-                return responseJson;
+                return;
             })
             .catch((error) => {
                 console.log(error);
