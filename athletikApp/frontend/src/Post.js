@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, ScrollView, ActionSheetIOS, Alert } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import { Avatar, Text, Divider, Button } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
@@ -82,17 +83,19 @@ export class Post extends Component {
     }
 
 
-    handleDeletePost = () => {
+    handleDeletePost = async () => {
+        const token = await SecureStore.getItemAsync('secure_token');
         fetch(BACKEND_URL + '/api/v1/posts/' + this.state.id,
             {
                 method: "DELETE",
                 mode: "cors",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": "Token " + token,
                 },
             }
         )
-            .then((response) => {
+            .then(async (response) => {
                 if (response.ok) {
                     const setParamsAction = CommonActions.setParams({
                         params: { refreshPage: true }
@@ -103,7 +106,7 @@ export class Post extends Component {
                     this.props.navigation.dispatch(backAction);
                     return;
                 }
-                throw new Error(response.message);
+                throw new Error(JSON.parse(await response.text()).message);
             })
             .catch((error) => {
                 console.log(error);

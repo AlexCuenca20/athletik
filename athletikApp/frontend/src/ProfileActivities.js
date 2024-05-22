@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { Text } from '@rneui/themed';
 import HomePage from './HomePage';
 
-export class Profile extends Component {
+export class ProfileActivities extends Component {
     constructor(props) {
         super(props);
     }
@@ -14,4 +13,4 @@ export class Profile extends Component {
     }
 }
 
-export default Profile
+export default ProfileActivities

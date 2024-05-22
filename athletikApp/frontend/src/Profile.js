@@ -4,7 +4,6 @@ import { Avatar, Text, Divider, Button } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import 'moment/locale/es';
-import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { CommonActions } from '@react-navigation/native';
 
 const activityTypeByIcon = {
@@ -21,6 +20,9 @@ const LONGITUDE_DELTA = 0.0421;
 export class Profile extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            ...props.route.params,
+        }
     }
 
     handleOnPress = () =>
@@ -52,7 +54,7 @@ export class Profile extends Component {
                 },
             }
         )
-            .then((response) => {
+            .then(async (response) => {
                 if (response.ok) {
                     const setParamsAction = CommonActions.setParams({
                         params: { refreshPage: true }
@@ -63,7 +65,7 @@ export class Profile extends Component {
                     this.props.navigation.dispatch(backAction);
                     return;
                 }
-                throw new Error('Something went wrong');
+                throw new Error(JSON.parse(await response.text()).message);
             })
             .catch((error) => {
                 console.log(error);
@@ -97,12 +99,12 @@ export class Profile extends Component {
                 },
             }
         )
-            .then((response) => {
+            .then(async (response) => {
                 if (response.ok) {
                     this.setState()
                     return;
                 }
-                throw new Error('Something went wrong');
+                throw new Error(JSON.parse(await response.text()).message);
             })
             .catch((error) => {
                 console.log(error);
@@ -118,12 +120,14 @@ export class Profile extends Component {
                             <Avatar
                                 size={50}
                                 rounded
-                                title={this.state.username?.charAt(0).toUpperCase()}
+                                // title={this.state.username?.charAt(0).toUpperCase()}
+                                title={'pepe'}
                                 containerStyle={{ backgroundColor: 'green' }}
                             />
                             <View style={styles.col}>
                                 <Text style={styles.h1}>
-                                    {this.state.username}
+                                    {/* {this.state.username} */}
+                                    pepe
                                 </Text>
                                 <View style={styles.row}>
                                     <Ionicons name={activityTypeByIcon[this.state.type]} size={20} style={{ marginRight: 5 }} />
@@ -133,96 +137,6 @@ export class Profile extends Component {
                                 </View>
                             </View>
                         </View>
-                        <View style={styles.row}>
-                            <Text style={styles.h2}>
-                                {this.state.title}
-                            </Text>
-                        </View>
-                        <View style={{
-                            flexDirection: "row",
-                            justifyContent: 'flex-start',
-                            marginBottom: 0,
-                            alignItems: 'center'
-                        }}>
-                            <Text style={styles.h3}>
-                                {this.state.description}
-                            </Text>
-                        </View>
-
-                        <View style={styles.row}>
-                            <MapView
-                                provider={PROVIDER_GOOGLE}
-                                style={styles.mapStyle}
-                                initialRegion={this.state.initialRegion}
-                                mapType="standard"
-                                scrollEnabled={false}
-                                zoomEnabled={false}
-                                rotateEnabled={false}
-                            >
-                                <Polyline
-                                    coordinates={this.state.routeCoordinates}
-                                    strokeColor="#4A80F5"
-                                    strokeWidth={2} />
-                            </MapView>
-                        </View>
-
-                        <Divider style={{ marginBottom: 10, marginTop: -10 }}></Divider>
-
-                        <View style={styles.row}>
-                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
-                                <Text>{this.state.distance} km</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Distancia</Text>
-                            </View>
-
-                            <Divider orientation='vertical'></Divider>
-
-                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
-                                <Text>{this.state.accumulatedDrop} m</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Desnivel</Text>
-                            </View>
-                        </View>
-
-                        <Divider style={{ marginBottom: 10 }}></Divider>
-
-                        <View style={styles.row}>
-                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
-                                <Text>{this.state.averageSpeed} km/h</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Velocidad media</Text>
-                            </View>
-
-                            <Divider orientation='vertical'></Divider>
-
-                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
-                                <Text>{this.state.maxSpeed} km/h</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Velocidad máxima</Text>
-                            </View>
-                        </View>
-
-                        <Divider style={{ marginBottom: 10 }}></Divider>
-
-                        <View style={styles.row}>
-                            <View style={{ ...{ alignItems: 'center' }, ...styles.col }}>
-                                <Text>{this._parseDuration(this.state.duration)}</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Duración</Text>
-                            </View>
-                        </View>
-
-                        <Divider style={{ marginBottom: 10 }}></Divider>
                     </View>
                 </ScrollView >
             </View >

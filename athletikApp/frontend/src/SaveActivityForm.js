@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import { Input, Button, Divider, CheckBox, Text } from '@rneui/themed';
 import { PickerIOS } from '@react-native-picker/picker';
 import moment from 'moment';
@@ -62,7 +63,7 @@ export class SaveActivityForm extends Component {
         this.props.navigation.dispatch(backAction);
     }
 
-    handleSavePress = () => {
+    handleSavePress = async () => {
         if (this.state.isPost && !this._validateInputs()) return;
 
         let apiRoute = BACKEND_URL + '/api/v1/activities/',
@@ -88,17 +89,20 @@ export class SaveActivityForm extends Component {
             description: this.state.description
         };
 
+        const token = await SecureStore.getItemAsync('secure_token');
+
         fetch(apiRoute,
             {
                 method: apiMethod,
                 mode: "cors",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": "Token " + token,
                 },
                 body: JSON.stringify(requestBody),
             }
         )
-            .then((response) => {
+            .then(async (response) => {
                 if (response.ok) {
                     this.props.navigation.navigate('Activity', {
                         refreshPage: true
@@ -108,7 +112,7 @@ export class SaveActivityForm extends Component {
                     });
                     return;
                 }
-                throw new Error(response.message);
+                throw new Error(JSON.parse(await response.text()).message);
             })
             .catch((error) => {
                 console.log(error);
