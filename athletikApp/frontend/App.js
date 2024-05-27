@@ -3,7 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Button } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Login from './src/Login.js';
@@ -15,25 +15,6 @@ import SaveActivityForm from './src/SaveActivityForm.js';
 import Post from './src/Post.js';
 import Profile from './src/Profile.js';
 import ProfileActivities from './src/ProfileActivities.js';
-
-function ActivityStackScreen() {
-  const ActivityStack = createNativeStackNavigator();
-
-  return (
-    <ActivityStack.Navigator>
-      <ActivityStack.Screen
-        name="Activity"
-        component={Activity}
-        options={{ title: 'Actividad' }}
-      />
-      <ActivityStack.Screen
-        name="SaveActivityForm"
-        component={SaveActivityForm}
-        options={{ title: 'Guardar actividad' }}
-      />
-    </ActivityStack.Navigator>
-  );
-}
 
 function HomePageStackScreen() {
   const HomePageStack = createNativeStackNavigator();
@@ -51,6 +32,25 @@ function HomePageStackScreen() {
         options={{ title: 'Publicación' }}
       />
     </HomePageStack.Navigator>
+  );
+}
+
+function ActivityStackScreen() {
+  const ActivityStack = createNativeStackNavigator();
+
+  return (
+    <ActivityStack.Navigator>
+      <ActivityStack.Screen
+        name="Activity"
+        component={Activity}
+        options={{ title: 'Actividad' }}
+      />
+      <ActivityStack.Screen
+        name="SaveActivityForm"
+        component={SaveActivityForm}
+        options={{ title: 'Guardar actividad' }}
+      />
+    </ActivityStack.Navigator>
   );
 }
 
@@ -91,15 +91,14 @@ function ProfileActivitiesStackScreen() {
 }
 
 function ProfileStackScreen() {
-  // const Tab = createMaterialTopTabNavigator();
-  const Tab = null;
+  const Tab = createMaterialTopTabNavigator();
 
   return (
     <Tab.Navigator screenOptions={{
       tabBarIndicatorStyle: { backgroundColor: 'green' }
     }}>
       <Tab.Screen
-        name="ProfileActivities"
+        name="ProfileActivitiesStack"
         component={ProfileActivitiesStackScreen}
         options={{ title: 'Actividades' }}
       />
@@ -123,8 +122,8 @@ function Home() {
 
           if (route.name === 'HomePageStack') {
             iconName = focused
-              ? 'ios-information-circle'
-              : 'ios-information-circle-outline';
+              ? 'home'
+              : 'home-outline';
           } else if (route.name === 'ActivityStack') {
             iconName = focused ? 'bicycle' : 'bicycle-outline';
           } else if (route.name === 'ProfileStack') {

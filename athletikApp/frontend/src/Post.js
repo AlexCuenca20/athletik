@@ -37,15 +37,14 @@ export class Post extends Component {
     }
 
     componentDidMount() {
-        if (this.props.userId)
-            this.props.navigation.setOptions({
-                headerRight: () => (
-                    <Button
-                        onPress={this.handleOnPress}
+        this.props.navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    onPress={this.handleOnPress}
 
-                    />
-                ),
-            });
+                />
+            ),
+        });
     }
 
     handleOnPress = () =>
@@ -85,7 +84,7 @@ export class Post extends Component {
 
     handleDeletePost = async () => {
         const token = await SecureStore.getItemAsync('secure_token');
-        fetch(BACKEND_URL + '/api/v1/posts/' + this.state.id,
+        fetch(BACKEND_URL + '/api/v1/posts/?post_id=' + this.state.id,
             {
                 method: "DELETE",
                 mode: "cors",

@@ -42,8 +42,7 @@ export class HomePage extends Component {
     }
 
     handleOnPress(post) {
-        const route = this.props.userId ? 'ProfilePost' : 'Post';
-        this.props.navigation.navigate(route, { post })
+        this.props.navigation.navigate('Post', { post })
     }
 
     _onRefresh = async () => {
@@ -54,7 +53,7 @@ export class HomePage extends Component {
 
     async _getAllPosts() {
         let apiRoute = BACKEND_URL + '/api/v1/posts/';
-        if (this.props.userId) apiRoute += this.props.userId;
+        if (this.props.userId) apiRoute += '?user_id=' + this.props.userId;
 
         const token = await SecureStore.getItemAsync('secure_token');
 
