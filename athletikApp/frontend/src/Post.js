@@ -41,6 +41,10 @@ export class Post extends Component {
             headerRight: () => (
                 <Button
                     onPress={this.handleOnPress}
+                    color='white'
+                    containerStyle={{ marginRight: -10 }}
+                    iconPosition='right'
+                    icon={<Ionicons name='ellipsis-horizontal-outline' size={20} />}
 
                 />
             ),
@@ -176,6 +180,8 @@ export class Post extends Component {
                                 {this.state.description}
                             </Text>
                         </View>
+
+                        <Divider style={{ marginTop: 15 }}></Divider>
 
                         <View style={styles.row}>
                             <MapView

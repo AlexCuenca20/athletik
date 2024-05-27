@@ -130,25 +130,6 @@ export class SaveActivityForm extends Component {
                         <Text h4 style={styles.sectionText}>Resumen</Text>
                         <View style={styles.row}>
                             <View style={styles.col}>
-                                <Text>{this.state.duration}</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Duración</Text>
-                            </View>
-
-                            <Divider orientation='vertical'></Divider>
-
-                            <View style={styles.col}>
-                                <Text>{moment(this.state.time).format('D-M-Y, HH:mm')}</Text>
-                                <Text style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                }}>Fecha</Text>
-                            </View>
-                        </View>
-                        <View style={styles.row}>
-                            <View style={styles.col}>
                                 <Text>{this.state.distance} km</Text>
                                 <Text style={{
                                     fontSize: 14,
@@ -165,7 +146,10 @@ export class SaveActivityForm extends Component {
                                     fontWeight: 'bold',
                                 }}>Desnivel</Text>
                             </View>
+
+
                         </View>
+                        <Divider style={{ margin: 10 }}></Divider>
                         <View style={styles.row}>
                             <View style={styles.col}>
                                 <Text>{this.state.averageSpeed} km/h</Text>
@@ -185,8 +169,19 @@ export class SaveActivityForm extends Component {
                                 }}>Velocidad máxima</Text>
                             </View>
                         </View>
+                        <Divider style={{ margin: 10 }}></Divider>
+                        <View style={styles.row}>
+                            <View style={styles.col}>
+                                <Text>{this.state.duration}</Text>
+                                <Text style={{
+                                    fontSize: 14,
+                                    fontWeight: 'bold',
+                                }}>Duración</Text>
+                            </View>
+                        </View>
+                        <Divider style={{ margin: 10 }}></Divider>
 
-                        <Text h4 style={{ margin: 10, marginBottom: 0 }}>Tipo de actividad</Text>
+                        <Text h4 style={styles.sectionText}>Tipo de actividad</Text>
                         <PickerIOS
                             selectedValue={this.state.type}
                             onValueChange={(itemValue, itemIndex) =>
@@ -239,24 +234,24 @@ export class SaveActivityForm extends Component {
                 <View style={styles.lowerContainer}>
                     <View style={{ flexDirection: "row", }}>
                         <Button
-                            buttonStyle={{ backgroundColor: '#d63a52' }}
+                            buttonStyle={{ backgroundColor: '#d63a52', borderRadius: 10 }}
                             containerStyle={{ width: '50%', padding: 10 }}
                             title='DESCARTAR'
                             size='lg'
                             titleStyle={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
+                                fontSize: 16,
+                                fontWeight: 'bold'
                             }}
                             onPress={() => this.handleDiscardPress()}
                         >
                         </Button>
                         <Button
-                            buttonStyle={{ backgroundColor: '#000' }}
+                            buttonStyle={{ backgroundColor: '#000', borderRadius: 10 }}
                             containerStyle={{ width: '50%', padding: 10 }}
                             title={this.getButtonTitle()}
                             size='lg'
                             titleStyle={{
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: 'bold',
                             }}
                             onPress={() => this.handleSavePress()}
@@ -296,8 +291,9 @@ const styles = StyleSheet.create({
         paddingTop: 5
     },
     sectionText: {
-        textAlign: 'left',
-        padding: 10
+        textAlign: 'center',
+        padding: 10,
+        fontWeight: 'bold'
     },
     item: {
         fontSize: 14,

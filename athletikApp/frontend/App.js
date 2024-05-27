@@ -24,12 +24,12 @@ function HomePageStackScreen() {
       <HomePageStack.Screen
         name="HomePage"
         component={HomePage}
-        options={{ title: 'Inicio' }}
+        options={{ headerShown: false }}
       />
       <HomePageStack.Screen
         name="Post"
         component={Post}
-        options={{ title: 'Publicación' }}
+        options={{ title: '', headerBackTitleVisible: false, headerTintColor: 'black' }}
       />
     </HomePageStack.Navigator>
   );
@@ -48,7 +48,7 @@ function ActivityStackScreen() {
       <ActivityStack.Screen
         name="SaveActivityForm"
         component={SaveActivityForm}
-        options={{ title: 'Guardar actividad' }}
+        options={{ title: 'Guardar actividad', headerBackTitleVisible: false, headerTintColor: 'black' }}
       />
     </ActivityStack.Navigator>
   );
@@ -96,7 +96,7 @@ function ProfileStackScreen() {
   return (
     <Tab.Navigator screenOptions={{
       tabBarIndicatorStyle: { backgroundColor: 'green' }
-    }}>
+    }} options={{ title: 'Tú' }}>
       <Tab.Screen
         name="ProfileActivitiesStack"
         component={ProfileActivitiesStackScreen}
@@ -125,7 +125,7 @@ function Home() {
               ? 'home'
               : 'home-outline';
           } else if (route.name === 'ActivityStack') {
-            iconName = focused ? 'bicycle' : 'bicycle-outline';
+            iconName = focused ? 'duplicate' : 'duplicate-outline';
           } else if (route.name === 'ProfileStack') {
             iconName = focused ? 'person-circle' : 'person-circle-outline';
           }
@@ -171,12 +171,12 @@ export default function App() {
           <Stack.Screen
             name="Login"
             component={Login}
-            options={{ title: '' }}
+            options={{ title: '', headerBackTitleVisible: false, headerTintColor: 'black' }}
           />
           <Stack.Screen
             name="SignUp"
             component={SignUp}
-            options={{ title: 'CREA TU CUENTA' }}
+            options={{ title: '', headerBackTitleVisible: false, headerTintColor: 'black' }}
           />
           <Stack.Screen
             name="Home"

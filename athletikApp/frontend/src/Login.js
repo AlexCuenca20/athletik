@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Input, Button, Divider } from '@rneui/themed';
 import { BACKEND_URL } from '../config';
 import * as SecureStore from 'expo-secure-store';
@@ -80,29 +80,52 @@ class Login extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.upperContainer}>
+                    <Text style={styles.h1}>
+                        Athletik
+                    </Text>
+                    <Text style={styles.h2}>
+                        Iniciar Sesión
+                    </Text>
+                    <Text style={styles.h3}>
+                        Introduce tu usuario y contraseña
+                    </Text>
                     <View style={styles.inputView}>
                         <Input
-                            placeholder="USUARIO"
+                            placeholder="Usuario"
                             onChangeText={(username) => this.setUsername(username)}
+                            inputContainerStyle={{
+                                borderWidth: 1,  // size/width of the border
+                                borderColor: 'lightgrey',  // color of the border
+                                borderRadius: 10,
+                                paddingLeft: 10,
+                                height: 55,
+                            }}
                         />
                     </View>
                     <View style={styles.inputView}>
                         <Input
-                            placeholder="CONTRASEÑA"
+                            placeholder="Contraseña"
                             secureTextEntry={true}
                             onChangeText={(password) => this.setPassword(password)}
+                            inputContainerStyle={{
+                                borderWidth: 1,  // size/width of the border
+                                borderColor: 'lightgrey',  // color of the border
+                                borderRadius: 10,
+                                paddingLeft: 10,
+                                height: 55,
+                            }}
                         />
                     </View>
                 </View>
                 <Divider></Divider>
                 <View style={styles.lowerContainer}>
                     <Button
-                        buttonStyle={{ backgroundColor: '#000' }}
+                        buttonStyle={{ backgroundColor: '#000', borderRadius: 10 }}
                         containerStyle={{ width: '90%' }}
                         size='lg'
-                        title="INICIAR SESIÓN"
+                        title="Entrar"
                         titleStyle={{
-                            fontSize: 14,
+                            fontSize: 18,
                             fontWeight: 'bold'
                         }}
                         onPress={() => this.handleLoginPress()}
@@ -126,7 +149,7 @@ const styles = StyleSheet.create({
         flex: 10,
         width: '100%',
         alignItems: 'center',
-        paddingTop: 40,
+        paddingTop: 10,
     },
     lowerContainer: {
         flex: 1,
@@ -139,5 +162,20 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingLeft: 10,
         paddingRight: 10
-    }
+    },
+    h1: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginBottom: 8
+    },
+    h2: {
+        fontSize: 22,
+        fontWeight: '600',
+        marginBottom: 5
+    },
+    h3: {
+        fontSize: 16,
+        fontWeight: '400',
+        marginBottom: 30
+    },
 });

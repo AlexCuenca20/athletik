@@ -17,24 +17,17 @@ export class LandingPage extends Component {
                 </View>
                 <View style={styles.lowerContainer}>
                     <Button
-                        buttonStyle={{ backgroundColor: '#000', justifyContent: 'space-between' }}
+                        buttonStyle={{ backgroundColor: '#000', justifyContent: 'center', borderRadius: 10 }}
                         containerStyle={{ width: '90%' }}
                         title="EMPEZAR"
                         size='lg'
                         titleStyle={{ fontSize: 18, fontWeight: 'bold' }}
-                        icon={{
-                            name: 'long-arrow-right',
-                            type: 'font-awesome',
-                            size: 25,
-                            color: 'white',
-                        }}
-                        iconRight
                         onPress={() => this.props.navigation.navigate('SignUp')}>
                     </Button>
                     <Button
                         title="¿YA TIENES UNA CUENTA? INICIA SESIÓN"
                         titleStyle={{
-                            fontSize: 12,
+                            fontSize: 14,
                             fontWeight: 'bold',
                             textDecorationLine: 'underline',
                             color: '#000'

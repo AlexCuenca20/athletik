@@ -82,26 +82,38 @@ class SignUp extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.upperContainer}>
+                    <Text style={styles.h1}>
+                        Athletik
+                    </Text>
+                    <Text style={styles.h2}>
+                        Registro
+                    </Text>
+                    <Text style={styles.h3}>
+                        Introduce tus datos
+                    </Text>
                     <View style={styles.inputView}>
                         <Input
                             placeholder="NOMBRE"
                             onChangeText={(name) => this.setName(name)}
+                            inputContainerStyle={styles.input}
                         />
                     </View>
                     <View style={styles.inputView}>
                         <Input
                             placeholder="USUARIO"
                             onChangeText={(username) => this.setUsername(username)}
+                            inputContainerStyle={styles.input}
                         />
                     </View>
 
-                    <Divider style={{ margin: 20 }}></Divider>
+                    <Divider style={{ margin: 10 }}></Divider>
 
                     <View style={styles.inputView}>
                         <Input
                             placeholder="EMAIL"
                             inputMode='email'
                             onChangeText={(email) => this.setEmail(email)}
+                            inputContainerStyle={styles.input}
                         />
                     </View>
                     <View style={styles.inputView}>
@@ -109,18 +121,19 @@ class SignUp extends Component {
                             placeholder="CONTRASEÑA"
                             secureTextEntry={true}
                             onChangeText={(password) => this.setPassword(password)}
+                            inputContainerStyle={styles.input}
                         />
                     </View>
                 </View>
                 <Divider></Divider>
                 <View style={styles.lowerContainer}>
                     <Button
-                        buttonStyle={{ backgroundColor: '#000' }}
+                        buttonStyle={{ backgroundColor: '#000', borderRadius: 10 }}
                         containerStyle={{ width: '90%' }}
                         title="ÚNETE"
                         size='lg'
                         titleStyle={{
-                            fontSize: 14,
+                            fontSize: 16,
                             fontWeight: 'bold',
                         }}
                         onPress={() => this.handleSignUpPress()}
@@ -144,6 +157,7 @@ const styles = StyleSheet.create({
         flex: 10,
         width: '100%',
         paddingTop: 20,
+        alignItems: 'center',
     },
     lowerContainer: {
         flex: 1,
@@ -151,5 +165,32 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingBottom: 40
+    },
+    inputView: {
+        width: '100%',
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    h1: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginBottom: 8
+    },
+    h2: {
+        fontSize: 22,
+        fontWeight: '600',
+        marginBottom: 5
+    },
+    h3: {
+        fontSize: 16,
+        fontWeight: '400',
+        marginBottom: 30
+    },
+    input: {
+        borderWidth: 1,  // size/width of the border
+        borderColor: 'lightgrey',  // color of the border
+        borderRadius: 10,
+        paddingLeft: 10,
+        height: 55,
     },
 });

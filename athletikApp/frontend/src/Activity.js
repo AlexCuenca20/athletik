@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions, Text, Alert, Platform } from 'react-nativ
 import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import haversine from 'haversine';
-import { Button, Dialog } from '@rneui/themed';
+import { Button, Divider } from '@rneui/themed';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import moment from 'moment';
 
@@ -194,24 +194,24 @@ export class Activity extends Component {
         if (this.state.activityPaused)
             return <View style={{ flexDirection: "row", }}>
                 <Button
-                    buttonStyle={{ backgroundColor: '#d63a52' }}
+                    buttonStyle={{ backgroundColor: '#d63a52', borderRadius: 10 }}
                     containerStyle={{ width: '50%', padding: 10 }}
                     title='FINALIZAR'
                     size='lg'
                     titleStyle={{
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleFinishPress()}
                 >
                 </Button>
                 <Button
-                    buttonStyle={{ backgroundColor: '#4eae6e' }}
+                    buttonStyle={{ backgroundColor: '#4eae6e', borderRadius: 10 }}
                     containerStyle={{ width: '50%', padding: 10 }}
                     title='REANUDAR'
                     size='lg'
                     titleStyle={{
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleStartPress()}
@@ -221,12 +221,12 @@ export class Activity extends Component {
         else
             return <View>
                 <Button
-                    buttonStyle={{ backgroundColor: '#000' }}
+                    buttonStyle={{ backgroundColor: '#000', borderRadius: 10 }}
                     containerStyle={{ width: '100%', padding: 10 }}
                     title={this.getButtonTitle()}
                     size='lg'
                     titleStyle={{
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: 'bold',
                     }}
                     onPress={() => this.handleStartPress()}
@@ -300,6 +300,7 @@ export class Activity extends Component {
                     </View>
                 </View>
                 <View style={styles.lowerContainer}>
+
                     <MapView
                         // provider={PROVIDER_GOOGLE}
                         style={styles.mapStyle}

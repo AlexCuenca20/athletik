@@ -12,7 +12,7 @@ import { BACKEND_URL } from '../config';
 const activityTypeByIcon = {
     mtb: 'bicycle',
     bic: 'bicycle',
-    hik: 'golf',
+    hik: 'image',
     run: 'fitness',
     walk: 'walk-outline'
 }
@@ -86,7 +86,7 @@ export class HomePage extends Component {
         let postCards = [];
         for (post of this.state.posts) {
             postCards.unshift(
-                <TouchableHighlight key={post.id} underlayColor={'#light-grey'} onPress={this.handleOnPress.bind(this, post)}>
+                <TouchableHighlight key={post.id} underlayColor={'#light-grey'} onPress={this.handleOnPress.bind(this, post)} >
                     <View style={styles.cardBorder}>
                         <View style={styles.postCard}>
                             <View style={styles.row}>
@@ -133,6 +133,7 @@ export class HomePage extends Component {
                                     }}>Desnivel</Text>
                                 </View>
                             </View>
+                            <Divider style={{ marginBottom: 10 }}></Divider>
                         </View>
                         <MapView
                             // provider={PROVIDER_GOOGLE}
@@ -151,12 +152,12 @@ export class HomePage extends Component {
                             <Polyline coordinates={post.routeCoordinates} strokeWidth={5} />
                         </MapView>
                     </View>
-                </TouchableHighlight>
+                </TouchableHighlight >
             );
         }
 
         return (
-            <View style={styles.container}>
+            <View style={styles.container} >
                 <ScrollView
                     refreshControl={
                         <RefreshControl
@@ -182,8 +183,9 @@ export default HomePage
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        backgroundColor: 'light-grey',
-        height: '100%'
+        backgroundColor: 'white',
+        height: '100%',
+        paddingTop: 50
     },
     postCard: {
         width: '100%',
@@ -219,6 +221,7 @@ const styles = StyleSheet.create({
     h2: {
         fontSize: 19,
         fontWeight: '600',
+        paddingLeft: 60
     },
     mapStyle: {
         width: '100%',
