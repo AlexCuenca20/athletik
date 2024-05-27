@@ -33,7 +33,7 @@ class UserView(APIView):
 
         response = {
             "message": f"Created new user with username: {user.username}",
-            "token": token,
+            "token": str(token),
             "ok": True,
             "status_code": 201,
         }
@@ -154,27 +154,47 @@ class PostView(APIView):
 
     def get(self, request):
 
+        user_id = request.GET.get("user_id")
+
         if request.user.is_authenticated:
+            if user_id != None:
+                allPosts = models.Post.objects.filter(user=request.user)
+            else:
+                allPosts = models.Post.objects.values()
+
             allPosts = models.Post.objects.values()
 
             for post in allPosts:
-                user_id = post.get("user_id")
-                if user_id != None:
-                    post["username"] = User.objects.get(pk=post.get("user_id")).username
+                post_user_id = post.get("user_id")
+                if post_user_id != None:
+                    post["username"] = User.objects.get(pk=post_user_id).username
 
             response = list(allPosts)
         else:
-            response = {"message": "User is not logged in"}
+            response = {
+                "message": "User is not logged in",
+                "ok": False,
+                "status_code": 401,
+            }
 
         return JsonResponse(response, safe=False)
 
     def delete(self, request, id=None):
+        post_id = request.GET.get("post_id")
         if request.user.is_authenticated:
-            models.Post.objects.filter(id=id).delete()
+            models.Post.objects.filter(id=post_id, user=request.user).delete()
 
-            response = {"message": "Post deleted"}
+            response = {
+                "message": "Deleted post",
+                "ok": True,
+                "status_code": 200,
+            }
         else:
-            response = {"message": "User is not logged in"}
+            response = {
+                "message": "User is not logged in",
+                "ok": False,
+                "status_code": 401,
+            }
 
         return JsonResponse(response)
 
@@ -192,7 +212,7 @@ class PostView(APIView):
         description = data.get("description")
 
         if request.user.is_authenticated:
-            models.Post.objects.filter(id=id).update(
+            models.Post.objects.filter(id=id, user=request.user).update(
                 type=type,
                 distance=distance,
                 averageSpeed=averageSpeed,
