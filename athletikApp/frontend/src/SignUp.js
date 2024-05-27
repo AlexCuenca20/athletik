@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Input, Button, Divider } from '@rneui/themed';
+import * as SecureStore from 'expo-secure-store';
 import { BACKEND_URL } from '../config';
 
 class SignUp extends Component {
@@ -55,7 +56,7 @@ class SignUp extends Component {
         )
             .then(async (response) => {
                 if (response.ok) {
-                    parsedTokenResponse = JSON.parse(await tokenResponse.text());
+                    parsedTokenResponse = JSON.parse(await response.text());
                     await SecureStore.setItemAsync('secure_token', parsedTokenResponse.token);
 
                     return;
