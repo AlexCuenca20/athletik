@@ -184,8 +184,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         backgroundColor: 'white',
-        height: '100%',
-        paddingTop: 50
+        height: '100%'
     },
     postCard: {
         width: '100%',

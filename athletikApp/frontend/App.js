@@ -24,7 +24,7 @@ function HomePageStackScreen() {
       <HomePageStack.Screen
         name="HomePage"
         component={HomePage}
-        options={{ headerShown: false }}
+        options={{ title: 'Inicio' }}
       />
       <HomePageStack.Screen
         name="Post"
