@@ -158,11 +158,9 @@ class PostView(APIView):
 
         if request.user.is_authenticated:
             if user_id != None:
-                allPosts = models.Post.objects.filter(user=request.user)
+                allPosts = models.Post.objects.filter(user=request.user).values()
             else:
                 allPosts = models.Post.objects.values()
-
-            allPosts = models.Post.objects.values()
 
             for post in allPosts:
                 post_user_id = post.get("user_id")
