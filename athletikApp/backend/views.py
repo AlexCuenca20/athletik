@@ -102,9 +102,6 @@ class UserView(APIView):
             user.email = new_email
             user.save()
 
-            print(user.username)
-            print(data)
-
             response = {
                 "message": f"Modified user with id: {request.user.id}",
                 "ok": True,

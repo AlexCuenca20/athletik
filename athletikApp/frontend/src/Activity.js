@@ -91,7 +91,6 @@ export class Activity extends Component {
                         latitude,
                         longitude
                     };
-                    console.log(location)
                     if (Platform.OS === "android") {
                         if (this.marker) {
                             this.marker._component.animateMarkerToCoordinate(
@@ -204,8 +203,6 @@ export class Activity extends Component {
             { "latitude": 33.1533788022891, "longitude": -3.5033004690645558 },
             ]
         })
-
-        console.log(this.state.routeCoordinates)
 
         this.watchID.remove()
 

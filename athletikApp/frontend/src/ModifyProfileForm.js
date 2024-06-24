@@ -13,7 +13,6 @@ class ModifyProfileForm extends Component {
             inputUsername: '',
             inputFullname: '',
         };
-        console.log(JSON.stringify(props.route.params.userInfo))
     }
 
     setEmail(email) {
