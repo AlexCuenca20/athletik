@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, ScrollView, RefreshControl, TouchableHighlight } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import { Avatar, Text, Divider } from '@rneui/themed';
+import { Avatar, Text, Divider, SearchBar } from '@rneui/themed';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import 'moment/locale/es';
@@ -26,7 +26,9 @@ export class HomePage extends Component {
         this.state = {
             posts: [],
             refreshing: false,
-            userId: undefined
+            userId: undefined,
+            search: '',
+            filteredPosts: []
         }
         moment.locale('es');
         // this.mapRefs = React.createRef([]);
@@ -89,7 +91,7 @@ export class HomePage extends Component {
             .then(async (response) => {
                 if (response.ok) {
                     parsedResponse = JSON.parse(await response.text());
-                    await this.setState({ posts: parsedResponse })
+                    await this.setState({ posts: parsedResponse, filteredPosts: parsedResponse })
                     return parsedResponse;
                 }
                 throw new Error(JSON.parse(await response.text()).message);
@@ -99,9 +101,18 @@ export class HomePage extends Component {
             });
     }
 
+    updateSearch = (search) => {
+        unscapedSearchTerm = search.toLowerCase();
+
+        filteredPosts = this.state.posts.filter((post) => {
+            return post.description.toLowerCase().includes(unscapedSearchTerm) || post.title.toLowerCase().includes(unscapedSearchTerm) || post.username.toLowerCase().includes(unscapedSearchTerm)
+        });
+        this.setState({ search, filteredPosts });
+    };
+
     render() {
         let postCards = [];
-        for (post of this.state.posts) {
+        for (post of this.state.filteredPosts) {
             postCards.unshift(
                 <TouchableHighlight key={post.id} underlayColor={'#light-grey'} onPress={this.handleOnPress.bind(this, post)} >
                     <View style={styles.cardBorder}>
@@ -116,7 +127,7 @@ export class HomePage extends Component {
                                 />
                                 <View style={styles.col}>
                                     <Text style={styles.h1}>
-                                        {post.username}
+                                        @{post.username}
                                     </Text>
                                     <View style={styles.row}>
                                         <Ionicons name={activityTypeByIcon[post.type]} size={20} style={{ marginRight: 5 }} />
@@ -186,6 +197,14 @@ export class HomePage extends Component {
                             onRefresh={this._onRefresh} />
                     }
                 >
+                    <SearchBar
+                        placeholder="Buscar actividad..."
+                        onChangeText={this.updateSearch}
+                        platform="ios"
+                        searchIcon={{ name: 'search' }}
+                        clearIcon={{ name: 'close-circle' }}
+                        value={this.state.search}
+                    />
                     {
                         postCards.length ? postCards :
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>

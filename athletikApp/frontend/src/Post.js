@@ -1,4 +1,4 @@
-import React, { Component, useRef } from 'react'
+import React, { Component } from 'react'
 import { View, StyleSheet, ScrollView, ActionSheetIOS, Alert } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { Avatar, Text, Divider, Button } from '@rneui/themed';
@@ -6,7 +6,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import 'moment/locale/es';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import { CommonActions } from '@react-navigation/native';
 import { BACKEND_URL } from '../config';
 
 const activityTypeByIcon = {

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, RefreshControl } from 'react-native';
 import { Avatar, Text, Divider, Button } from '@rneui/themed';
 import 'moment/locale/es';
-import moment, { duration } from 'moment';
+import moment from 'moment';
 import { BACKEND_URL } from '../config';
 import * as SecureStore from 'expo-secure-store';
 
@@ -32,6 +32,8 @@ export class Profile extends Component {
                 activities: [],
             },
         }
+        this.storedUserId = undefined;
+        this.storedProfileId = undefined;
     }
 
     componentDidMount() {
@@ -81,7 +83,7 @@ export class Profile extends Component {
 
         if (monthlyActivities.length > 0) {
             monthlySum.averageSpeed = monthlySum.accumulatedSpeed / monthlyActivities.length;
-            monthlySum.averageSpeed = Math.round(monthlySum.averageSpeed);
+            monthlySum.averageSpeed = monthlySum.averageSpeed > 0 ? Math.round(monthlySum.averageSpeed) : 0;
             monthlySum.duration = Math.ceil(monthlySum.duration).toString() + ' h'
         } else {
             allTimeSum.duration = '0 h'
@@ -108,7 +110,7 @@ export class Profile extends Component {
 
         if (allTimeActivities.length > 0) {
             allTimeSum.averageSpeed = allTimeSum.accumulatedSpeed / allTimeActivities.length;
-            allTimeSum.averageSpeed = Math.round(allTimeSum.averageSpeed);
+            allTimeSum.averageSpeed = allTimeSum.averageSpeed > 0 ? Math.round(allTimeSum.averageSpeed) : 0;
             allTimeSum.duration = Math.ceil(allTimeSum.duration).toString() + ' h'
         } else {
             allTimeSum.duration = '0 h'
@@ -118,12 +120,11 @@ export class Profile extends Component {
     }
 
     async _getProfileInfo() {
-        console.log(JSON.stringify(this.props.route.params));
-        const storedUserId = await SecureStore.getItemAsync('id'),
-            storedProfileId = await SecureStore.getItemAsync('profile_id')
+        this.storedUserId = await SecureStore.getItemAsync('id'),
+            this.storedProfileId = await SecureStore.getItemAsync('profile_id');
         token = await SecureStore.getItemAsync('secure_token');
 
-        fetchUserId = storedProfileId != 'undefined' && storedProfileId ? storedProfileId : storedUserId;
+        fetchUserId = this.storedProfileId != 'undefined' && this.storedProfileId ? this.storedProfileId : this.storedUserId;
         fetch(BACKEND_URL + '/api/v1/activities/?user_id=' + fetchUserId,
             {
                 method: "GET",
@@ -154,6 +155,60 @@ export class Profile extends Component {
             });
     }
 
+    async _deleteProfile() {
+        token = await SecureStore.getItemAsync('secure_token');
+
+        fetch(BACKEND_URL + '/api/v1/users/',
+            {
+                method: "DELETE",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Token " + token,
+                },
+            }
+        )
+            .then(async (response) => {
+                if (response.ok) {
+                    this.props.navigation.navigate('LandingPage');
+
+                    return;
+                }
+                throw new Error(JSON.parse(await response.text()).message);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    createDeletePostDialog() {
+        Alert.alert('¿Estás seguro?',
+            'Si eliminas tu usuario, se borrará de forma definitiva.', [
+            {
+                text: 'Eliminar',
+                onPress: () => this._deleteProfile(),
+                style: 'destructive',
+            },
+            {
+                text: 'Cancelar',
+                style: 'cancel'
+            },
+        ])
+    }
+
+    handleOnModifyPress = () => {
+        userInfo = {
+            username: this.state.username,
+            email: this.state.email,
+            fullname: this.state.fullname,
+        };
+        this.props.navigation.navigate('ModifyProfileForm', { userInfo })
+    }
+
+    handleOnDeletePress = () => {
+        this.createDeletePostDialog();
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -176,7 +231,7 @@ export class Profile extends Component {
                                     {this.state.fullname}
                                 </Text>
                                 <Text style={styles.h2}>
-                                    {this.state.username}
+                                    @{this.state.username}
                                 </Text>
                                 <Text style={styles.h3}>
                                     {this.state.email}
@@ -326,6 +381,33 @@ export class Profile extends Component {
                         </View>
                         <Divider style={{ margin: 5 }}></Divider>
                     </View>
+
+                    {this.storedProfileId != 'undefined' && this.storedProfileId ? null : < View style={{ flexDirection: "row", }}>
+                        <Button
+                            buttonStyle={{ backgroundColor: '#000', borderRadius: 10 }}
+                            containerStyle={{ width: '50%', padding: 10 }}
+                            title='MODIFICAR'
+                            size='lg'
+                            titleStyle={{
+                                fontSize: 16,
+                                fontWeight: 'bold',
+                            }}
+                            onPress={() => this.handleOnModifyPress()}
+                        >
+                        </Button>
+                        <Button
+                            buttonStyle={{ backgroundColor: '#d63a52', borderRadius: 10 }}
+                            containerStyle={{ width: '50%', padding: 10 }}
+                            title='ELIMINAR'
+                            size='lg'
+                            titleStyle={{
+                                fontSize: 16,
+                                fontWeight: 'bold',
+                            }}
+                            onPress={() => this.handleOnDeletePress()}
+                        >
+                        </Button>
+                    </View>}
                 </ScrollView >
             </View >
         )
