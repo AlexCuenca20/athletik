@@ -7,7 +7,7 @@ import moment from 'moment';
 import 'moment/locale/es';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { BACKEND_URL } from '../config';
-
+import { withNavigation } from 'react-navigation';
 
 const activityTypeByIcon = {
     mtb: 'bicycle',
@@ -25,24 +25,31 @@ export class HomePage extends Component {
         super(props);
         this.state = {
             posts: [],
-            refreshing: false
+            refreshing: false,
+            userId: undefined
         }
         moment.locale('es');
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         this._onRefresh();
     }
 
     componentDidUpdate = (prevProps, prevState) => {
-        if (prevProps.route?.params?.refreshPage !== this.props.route?.params?.refreshPage) {
+        if (prevProps.route?.params?.refreshPage !== this.props.route?.params?.refreshPage || (this.props.userId && this.state.userId !== this.props.userId)) {
             this._onRefresh();
-            this.props.route.params.refreshPage = false;
+            this.setState({ userId: this.props.userId })
+            if (prevProps.route?.params?.refreshPage !== this.props.route?.params?.refreshPage) this.props.route.params.refreshPage = false;
         }
     }
 
     handleOnPress(post) {
-        this.props.navigation.navigate('Post', { post })
+        this.props.navigation.navigate('Post', { post });
+    }
+
+    async handleOnProfilePress(post) {
+        await SecureStore.setItemAsync('profile_id', post.user_id.toString());
+        this.props.navigation.navigate('OtherProfile', { screen: 'ProfileActivitiesStack', params: { screen: 'ProfileActivities', params: { userId: post.user_id } } });
     }
 
     _onRefresh = async () => {
@@ -53,7 +60,7 @@ export class HomePage extends Component {
 
     async _getAllPosts() {
         let apiRoute = BACKEND_URL + '/api/v1/posts/';
-        if (this.props.userId) apiRoute += '?user_id=' + this.props.userId;
+        if (this.props.userId !== undefined) apiRoute += '?user_id=' + this.props.userId;
 
         const token = await SecureStore.getItemAsync('secure_token');
 
@@ -70,12 +77,10 @@ export class HomePage extends Component {
             .then(async (response) => {
                 if (response.ok) {
                     parsedResponse = JSON.parse(await response.text());
+                    await this.setState({ posts: parsedResponse })
                     return parsedResponse;
                 }
                 throw new Error(JSON.parse(await response.text()).message);
-            })
-            .then((data) => {
-                this.setState({ posts: data })
             })
             .catch((error) => {
                 console.log(error);
@@ -95,6 +100,7 @@ export class HomePage extends Component {
                                     rounded
                                     title={post.username?.charAt(0).toUpperCase()}
                                     containerStyle={{ backgroundColor: 'green' }}
+                                    onPress={this.handleOnProfilePress.bind(this, post)}
                                 />
                                 <View style={styles.col}>
                                     <Text style={styles.h1}>
@@ -169,7 +175,7 @@ export class HomePage extends Component {
                         postCards.length ? postCards :
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <Ionicons name='megaphone-outline' size={200} style={{ marginTop: 20 }} />
-                                <Text h4 style={{ textAlign: 'center' }}>Parece que esto está muy tranquilo... Nadie ha publicado actividades aún</Text>
+                                <Text h4 style={{ textAlign: 'center' }}>Parece que esto está muy tranquilo... No se han publicado actividades aún</Text>
                             </View>
                     }
                 </ScrollView>
@@ -178,7 +184,7 @@ export class HomePage extends Component {
     }
 }
 
-export default HomePage
+export default withNavigation(HomePage)
 
 const styles = StyleSheet.create({
     container: {
