@@ -100,13 +100,9 @@ export class Post extends Component {
         )
             .then(async (response) => {
                 if (response.ok) {
-                    const setParamsAction = CommonActions.setParams({
-                        params: { refreshPage: true }
-                    });
-                    const backAction = CommonActions.goBack();
+                    storedUserId = await SecureStore.getItemAsync('id');
+                    this.props.navigation.navigate('ProfileActivities');
 
-                    this.props.navigation.dispatch(setParamsAction);
-                    this.props.navigation.dispatch(backAction);
                     return;
                 }
                 throw new Error(JSON.parse(await response.text()).message);

@@ -31,6 +31,11 @@ function HomePageStackScreen() {
         component={Post}
         options={{ title: '', headerBackTitleVisible: false, headerTintColor: 'black' }}
       />
+      <HomePageStack.Screen
+        name="OtherProfile"
+        component={ProfileStackScreen}
+        options={{ title: 'Perfil', headerBackTitleVisible: false, headerTintColor: 'black' }}
+      />
     </HomePageStack.Navigator>
   );
 }
@@ -84,7 +89,7 @@ function ProfileActivitiesStackScreen() {
       <ProfileActivitiesStack.Screen
         name="ModifyActivityForm"
         component={SaveActivityForm}
-        options={{ title: 'Modificar actividad' }}
+        options={{ title: '', headerShown: false }}
       />
     </ProfileActivitiesStack.Navigator >
   );
@@ -100,7 +105,7 @@ function ProfileStackScreen() {
       <Tab.Screen
         name="ProfileActivitiesStack"
         component={ProfileActivitiesStackScreen}
-        options={{ title: 'Actividades' }}
+        options={{ title: 'Publicaciones' }}
       />
       <Tab.Screen
         name="Profile"

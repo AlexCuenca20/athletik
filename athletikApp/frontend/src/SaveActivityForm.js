@@ -104,12 +104,16 @@ export class SaveActivityForm extends Component {
         )
             .then(async (response) => {
                 if (response.ok) {
-                    this.props.navigation.navigate('Activity', {
-                        refreshPage: true
-                    });
-                    this.props.navigation.navigate('HomePage', {
-                        refreshPage: true
-                    });
+                    if (!this.props.route.params?.modifyingPost) {
+                        this.props.navigation.navigate('Activity', {
+                            refreshPage: true
+                        });
+                        this.props.navigation.navigate('HomePage', {
+                            refreshPage: true
+                        });
+                    } else {
+                        this.props.navigation.navigate('ProfileActivities');
+                    }
                     return;
                 }
                 throw new Error(JSON.parse(await response.text()).message);
