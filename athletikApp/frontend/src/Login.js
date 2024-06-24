@@ -58,6 +58,12 @@ class Login extends Component {
                         )
                             .then(async (loginResponse) => {
                                 if (loginResponse.ok) {
+                                    parsedLoginResponse = JSON.parse(await loginResponse.text());
+                                    console.log(parsedLoginResponse)
+                                    await SecureStore.setItemAsync('email', parsedLoginResponse.user_info.email);
+                                    await SecureStore.setItemAsync('fullname', parsedLoginResponse.user_info.fullname);
+                                    await SecureStore.setItemAsync('username', parsedLoginResponse.user_info.username);
+                                    await SecureStore.setItemAsync('id', parsedLoginResponse.user_info.id.toString());
                                     this.props.navigation.navigate('Home');
                                     return;
                                 }

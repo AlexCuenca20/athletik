@@ -58,6 +58,10 @@ class SignUp extends Component {
                 if (response.ok) {
                     parsedTokenResponse = JSON.parse(await response.text());
                     await SecureStore.setItemAsync('secure_token', parsedTokenResponse.token);
+                    await SecureStore.setItemAsync('email', parsedTokenResponse.user_info.email);
+                    await SecureStore.setItemAsync('fullname', parsedTokenResponse.user_info.fullname);
+                    await SecureStore.setItemAsync('username', parsedTokenResponse.user_info.username);
+                    await SecureStore.setItemAsync('id', parsedTokenResponse.user_info.id.toString());
 
                     return;
                 }
