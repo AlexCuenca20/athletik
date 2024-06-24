@@ -3,16 +3,17 @@ import { View, StyleSheet, Dimensions, Text, Alert, Platform } from 'react-nativ
 import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import haversine from 'haversine';
-import { Button, Divider } from '@rneui/themed';
+import { Button } from '@rneui/themed';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import moment from 'moment';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const { width, height } = Dimensions.get("window");
 
 const ASPECT_RATIO = width / height;
 const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.0922;
+const LATITUDE_DELTA = 0.0922 / 10;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const INITIAL_STATE = {
     latitude: LATITUDE,
@@ -41,6 +42,7 @@ const INITIAL_STATE = {
     accumulatedDrop: 0,
     averageSpeed: 0,
     accumulatedSpeed: 0,
+    lastAltitude: 0,
     errorDialogVisible: false
 };
 
@@ -69,7 +71,8 @@ export class Activity extends Component {
                 maxSpeed: 0,
                 accumulatedDrop: 0,
                 averageSpeed: 0,
-                accumulatedSpeed: 0
+                accumulatedSpeed: 0,
+                lastAltitude: 0
             });
             this.props.route.params.refreshPage = false;
         }
@@ -79,9 +82,8 @@ export class Activity extends Component {
         let { status } = await Location.requestForegroundPermissionsAsync()
 
         if (status === 'granted')
-            this.watchID = await Location.watchPositionAsync({},
+            this.watchID = await Location.watchPositionAsync({ accuracy: Location.Accuracy.BestForNavigation, activityType: Location.ActivityType.Fitness },
                 location => {
-
                     const { coordinate, routeCoordinates, distanceTravelled } = this.state;
                     const { latitude, longitude, altitude, speed } = location.coords;
 
@@ -89,6 +91,7 @@ export class Activity extends Component {
                         latitude,
                         longitude
                     };
+                    console.log(location)
                     if (Platform.OS === "android") {
                         if (this.marker) {
                             this.marker._component.animateMarkerToCoordinate(
@@ -97,17 +100,23 @@ export class Activity extends Component {
                             );
                         }
                     } else {
-                        coordinate.timing(newCoordinate).start();
+                        coordinate.timing({
+                            ...newCoordinate,
+                            useNativeDriver: false,
+                            duration: 500
+                        }).start();
                     }
                     this.setState({
                         latitude,
                         longitude,
-                        altitude,
+                        coordinate,
                         routeCoordinates: routeCoordinates.concat([newCoordinate]),
                         distanceTravelled:
                             parseFloat(
                                 distanceTravelled + this.calcDistance(newCoordinate)
                             ).toFixed(2),
+                        lastAltitude: altitude,
+                        accumulatedDrop: this.calcAccDrop(location.altitude),
                         prevLatLng: newCoordinate,
                         maxSpeed: this.calcMaxSpeed(speed),
                         accumulatedSpeed: this.state.accumulatedSpeed + speed,
@@ -116,6 +125,10 @@ export class Activity extends Component {
                 }
 
             );
+    }
+
+    componentWillUnmount() {
+        this.watchID.remove()
     }
 
     calcDistance = newLatLng => {
@@ -132,12 +145,22 @@ export class Activity extends Component {
         return parseFloat(formattedSpeed).toFixed(2);
     };
 
+    calcAccDrop = altitude => {
+        const { accumulatedDrop, lastAltitude } = this.state;
+
+        accAltitude = altitude > lastAltitude ? (accumulatedDrop + (altitude - lastAltitude)) : accumulatedDrop;
+
+        return parseInt(accAltitude);
+    };
+
     calcAverageSpeed = newSpeed => {
         const { accumulatedSpeed, msecsDuration } = this.state;
 
-        const averageSpeed = (accumulatedSpeed + newSpeed) / msecsDuration
+        averageSpeed = (accumulatedSpeed + newSpeed) / msecsDuration
 
-        return parseFloat(averageSpeed * 3.6).toFixed(2);
+        averageSpeed = parseFloat(averageSpeed * 3.6).toFixed(2)
+
+        return averageSpeed > 0 ? averageSpeed : 0;
     };
 
     getMapRegion = () => ({
@@ -167,10 +190,24 @@ export class Activity extends Component {
     }
 
     handleFinishPress() {
-        if (this.state.routeCoordinates === []) {
+        if (this.state.routeCoordinates == []) {
             this.setErrorDialogVisible();
             return;
         }
+
+        this.setState({
+            routeCoordinates: [{ "latitude": 37.1533788022167, "longitude": -3.6033004690645334 },
+            { "latitude": 37.1533788022891, "longitude": -3.6033004690645558 },
+            { "latitude": 36.1533788022891, "longitude": -3.7033004690645558 },
+            { "latitude": 35.1533788022891, "longitude": -3.8033004690645558 },
+            { "latitude": 34.1533788022891, "longitude": -3.8764004690645558 },
+            { "latitude": 33.1533788022891, "longitude": -3.5033004690645558 },
+            ]
+        })
+
+        console.log(this.state.routeCoordinates)
+
+        this.watchID.remove()
 
         this.props.navigation.navigate('SaveActivityForm', {
             type: this.state.activityType,
@@ -272,7 +309,7 @@ export class Activity extends Component {
                         </View>
                         <View style={styles.col2}>
                             <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
-                                {parseFloat(this.state.accumulatedDrop).toFixed(2)} m
+                                {this.state.accumulatedDrop} m
                             </Text>
                         </View>
                         <View style={styles.col3}>
@@ -310,7 +347,7 @@ export class Activity extends Component {
                         region={this.getMapRegion()}
                         mapType="standard"
                     >
-                        <Polyline coordinates={this.state.routeCoordinates} strokeWidth={5} />
+                        <Polyline coordinates={this.state.routeCoordinates} strokeWidth={3} strokeColor="#2ecc71" geodesic={true} />
                         <Marker.Animated
                             ref={marker => {
                                 this.marker = marker;
