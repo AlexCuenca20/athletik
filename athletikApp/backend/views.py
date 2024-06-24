@@ -34,6 +34,12 @@ class UserView(APIView):
         response = {
             "message": f"Created new user with username: {user.username}",
             "token": str(token),
+            "user_info": {
+                "username": user.username,
+                "fullname": user.first_name,
+                "email": user.email,
+                "id": user.id,
+            },
             "ok": True,
             "status_code": 201,
         }
@@ -47,6 +53,12 @@ class UserView(APIView):
             response = {
                 "message": f"Logged in as: {request.user}",
                 "ok": True,
+                "user_info": {
+                    "username": request.user.username,
+                    "fullname": request.user.first_name,
+                    "email": request.user.email,
+                    "id": request.user.id,
+                },
                 "status_code": 200,
             }
         else:
@@ -62,6 +74,31 @@ class UserView(APIView):
 @method_decorator(csrf_exempt, name="dispatch")
 class ActivityView(APIView):
     authentication_classes = [TokenAuthentication, BasicAuthentication]
+
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+
+        if request.user.is_authenticated:
+            activitiyList = models.Activity.objects.filter(user__id=user_id).values()
+            user_info = User.objects.get(pk=user_id)
+            user_activities = {
+                "user_info": {
+                    "username": user_info.username,
+                    "email": user_info.email,
+                    "fullname": user_info.first_name,
+                },
+                "activities": list(activitiyList),
+            }
+
+            response = user_activities
+        else:
+            response = {
+                "message": "User is not logged in",
+                "ok": False,
+                "status_code": 401,
+            }
+
+        return JsonResponse(response, safe=False)
 
     def post(self, request):
 
@@ -158,7 +195,7 @@ class PostView(APIView):
 
         if request.user.is_authenticated:
             if user_id != None:
-                allPosts = models.Post.objects.filter(user=request.user).values()
+                allPosts = models.Post.objects.filter(user__id=user_id).values()
             else:
                 allPosts = models.Post.objects.values()
 

@@ -24,7 +24,7 @@ SECRET_KEY = "django-insecure-(hzk7!!a@4+$ph!f!eu0r!y8%-j=-t1!#5+2=k^m4%41=6(_p!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-BACKEND_URL = "192.168.18.68"
+BACKEND_URL = "192.168.1.136"
 
 ALLOWED_HOSTS = [BACKEND_URL]
 
