@@ -70,6 +70,55 @@ class UserView(APIView):
 
         return JsonResponse(response, status=response["status_code"])
 
+    def delete(self, request):
+        if request.user.is_authenticated:
+            u = User.objects.get(id=request.user.id)
+            u.delete()
+
+            response = {
+                "message": "Deleted user",
+                "ok": True,
+                "status_code": 200,
+            }
+        else:
+            response = {
+                "message": "User is not logged in",
+                "ok": False,
+                "status_code": 401,
+            }
+
+        return JsonResponse(response)
+
+    def put(self, request, id=None):
+        data = json.loads(request.body.decode("utf-8"))
+        new_username = data.get("username")
+        new_fullname = data.get("fullname")
+        new_email = data.get("email")
+
+        if request.user.is_authenticated:
+            user = User.objects.get(id=request.user.id)
+            user.username = new_username
+            user.first_name = new_fullname
+            user.email = new_email
+            user.save()
+
+            print(user.username)
+            print(data)
+
+            response = {
+                "message": f"Modified user with id: {request.user.id}",
+                "ok": True,
+                "status_code": 200,
+            }
+        else:
+            response = {
+                "message": "User is not logged in",
+                "ok": False,
+                "status_code": 401,
+            }
+
+        return JsonResponse(response, status=response["status_code"])
+
 
 @method_decorator(csrf_exempt, name="dispatch")
 class ActivityView(APIView):

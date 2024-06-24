@@ -15,6 +15,7 @@ import SaveActivityForm from './src/SaveActivityForm.js';
 import Post from './src/Post.js';
 import Profile from './src/Profile.js';
 import ProfileActivities from './src/ProfileActivities.js';
+import ModifyProfileForm from './src/ModifyProfileForm.js';
 
 function HomePageStackScreen() {
   const HomePageStack = createNativeStackNavigator();
@@ -76,20 +77,35 @@ function ProfileActivitiesStackScreen() {
         name="ProfilePost"
         component={Post}
         options={{
-          title: 'Publicación',
-          headerRight: () => (
-            <Button
-              color='white'
-              containerStyle={{ marginRight: -10 }}
-              iconPosition='right'
-              icon={<Ionicons name='ellipsis-horizontal-outline' size={20} />} />
-          )
+          title: 'Publicación'
         }}
       />
       <ProfileActivitiesStack.Screen
         name="ModifyActivityForm"
         component={SaveActivityForm}
         options={{ title: '', headerShown: false }}
+      />
+    </ProfileActivitiesStack.Navigator >
+  );
+}
+
+function ProfileDetailsStackScreen() {
+  const ProfileActivitiesStack = createNativeStackNavigator();
+
+  return (
+    <ProfileActivitiesStack.Navigator>
+      <ProfileActivitiesStack.Screen
+        name="ProfileDetails"
+        component={Profile}
+        options={{
+          title: 'Perfil',
+          headerShown: false
+        }}
+      />
+      <ProfileActivitiesStack.Screen
+        name="ModifyProfileForm"
+        component={ModifyProfileForm}
+        options={{ title: '', headerBackTitleVisible: false, headerTintColor: 'black' }}
       />
     </ProfileActivitiesStack.Navigator >
   );
@@ -108,8 +124,8 @@ function ProfileStackScreen() {
         options={{ title: 'Publicaciones' }}
       />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="ProfileDetailsStack"
+        component={ProfileDetailsStackScreen}
         options={{ title: 'Perfil' }}
       />
     </Tab.Navigator >
@@ -155,7 +171,9 @@ function Home() {
       <Tab.Screen
         name="ProfileStack"
         component={ProfileStackScreen}
-        options={{ title: 'Tú' }}
+        options={{
+          title: 'Tú'
+        }}
       />
     </Tab.Navigator>
   );
