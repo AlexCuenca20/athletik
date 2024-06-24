@@ -209,7 +209,7 @@ export class Profile extends Component {
                             <Divider orientation='vertical'></Divider>
 
                             <View style={styles.centerCol}>
-                                <Text>{this.state.monthlyStats.accumulatedDrop} m</Text>
+                                <Text>{parseInt(this.state.monthlyStats.accumulatedDrop)} m</Text>
                                 <Text style={{
                                     fontSize: 14,
                                     fontWeight: 'bold',

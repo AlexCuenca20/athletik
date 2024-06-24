@@ -17,8 +17,8 @@ const activityTypeByIcon = {
     walk: 'walk-outline'
 }
 
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = 0.0421;
+const LATITUDE_DELTA = 0.0922 / 10;
+const LONGITUDE_DELTA = 0.0421 * 0.05;
 
 export class HomePage extends Component {
     constructor(props) {
@@ -29,11 +29,23 @@ export class HomePage extends Component {
             userId: undefined
         }
         moment.locale('es');
+        // this.mapRefs = React.createRef([]);
     }
 
     componentDidMount() {
         this._onRefresh();
     }
+
+    // async fitMapToPolyline(map, coords) {
+    //     map?.current?.fitToCoordinates(coords, {
+    //         edgePadding: {
+    //             top: 20,
+    //             right: 20,
+    //             bottom: 20,
+    //             left: 20,
+    //         },
+    //     });
+    // }
 
     componentDidUpdate = (prevProps, prevState) => {
         if (prevProps.route?.params?.refreshPage !== this.props.route?.params?.refreshPage || (this.props.userId && this.state.userId !== this.props.userId)) {
@@ -143,6 +155,8 @@ export class HomePage extends Component {
                         </View>
                         <MapView
                             // provider={PROVIDER_GOOGLE}
+                            // key={post.id}
+                            // ref={el => this.mapRefs?.current[post.id] = el}
                             style={styles.mapStyle}
                             initialRegion={{
                                 latitude: post.routeCoordinates[0]?.latitude,
@@ -155,11 +169,12 @@ export class HomePage extends Component {
                             zoomEnabled={false}
                             rotateEnabled={false}
                         >
-                            <Polyline coordinates={post.routeCoordinates} strokeWidth={5} />
+                            <Polyline coordinates={post.routeCoordinates} strokeWidth={3} strokeColor="#2ecc71" geodesic={true} />
                         </MapView>
                     </View>
                 </TouchableHighlight >
             );
+            // this.fitMapToPolyline(currentMap, post.routeCoordinates);
         }
 
         return (

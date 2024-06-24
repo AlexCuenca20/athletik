@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useRef } from 'react'
 import { View, StyleSheet, ScrollView, ActionSheetIOS, Alert } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { Avatar, Text, Divider, Button } from '@rneui/themed';
@@ -17,8 +17,8 @@ const activityTypeByIcon = {
     walk: 'walk-outline'
 }
 
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = 0.0421;
+const LATITUDE_DELTA = 0.0922 / 10;
+const LONGITUDE_DELTA = 0.0421 * 0.05;
 
 export class Post extends Component {
     constructor(props) {
@@ -31,23 +31,39 @@ export class Post extends Component {
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA
             },
-            routeCoordinates: []
         }
         moment.locale('es');
+        this.map = React.createRef();
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        const userId = await SecureStore.getItemAsync('id');
+
         this.props.navigation.setOptions({
             headerRight: () => (
-                <Button
-                    onPress={this.handleOnPress}
-                    color='white'
-                    containerStyle={{ marginRight: -10 }}
-                    iconPosition='right'
-                    icon={<Ionicons name='ellipsis-horizontal-outline' size={20} />}
+                userId == this.state.user_id ?
+                    <Button
+                        onPress={this.handleOnPress}
+                        color='white'
+                        containerStyle={{ marginRight: -10 }}
+                        iconPosition='right'
+                        icon={<Ionicons name='ellipsis-horizontal-outline' size={20} />}
 
-                />
+                    /> : null
             ),
+        });
+
+        this.fitMapToPolyline();
+    }
+
+    async fitMapToPolyline() {
+        this.map.current.fitToCoordinates(this.state.routeCoordinates, {
+            edgePadding: {
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 20,
+            },
         });
     }
 
@@ -182,17 +198,17 @@ export class Post extends Component {
                         <View style={styles.row}>
                             <MapView
                                 // provider={PROVIDER_GOOGLE}
+                                ref={this.map}
                                 style={styles.mapStyle}
                                 initialRegion={this.state.initialRegion}
                                 mapType="standard"
-                                scrollEnabled={false}
-                                zoomEnabled={false}
-                                rotateEnabled={false}
+                                scrollEnabled={true}
+                                zoomEnabled={true}
+                                rotateEnabled={true}
                             >
                                 <Polyline
                                     coordinates={this.state.routeCoordinates}
-                                    strokeColor="#4A80F5"
-                                    strokeWidth={2} />
+                                    strokeWidth={3} strokeColor="#2ecc71" geodesic={true} />
                             </MapView>
                         </View>
 
