@@ -6,7 +6,6 @@ import haversine from 'haversine';
 import { Button } from '@rneui/themed';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import moment from 'moment';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const { width, height } = Dimensions.get("window");
 
@@ -193,16 +192,6 @@ export class Activity extends Component {
             this.setErrorDialogVisible();
             return;
         }
-
-        this.setState({
-            routeCoordinates: [{ "latitude": 37.1533788022167, "longitude": -3.6033004690645334 },
-            { "latitude": 37.1533788022891, "longitude": -3.6033004690645558 },
-            { "latitude": 36.1533788022891, "longitude": -3.7033004690645558 },
-            { "latitude": 35.1533788022891, "longitude": -3.8033004690645558 },
-            { "latitude": 34.1533788022891, "longitude": -3.8764004690645558 },
-            { "latitude": 33.1533788022891, "longitude": -3.5033004690645558 },
-            ]
-        })
 
         this.watchID.remove()
 

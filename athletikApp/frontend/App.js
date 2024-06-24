@@ -105,7 +105,7 @@ function ProfileDetailsStackScreen() {
       <ProfileActivitiesStack.Screen
         name="ModifyProfileForm"
         component={ModifyProfileForm}
-        options={{ title: '', headerBackTitleVisible: false, headerTintColor: 'black' }}
+        options={{ title: 'Modifica tu perfil', headerBackTitleVisible: false, headerTintColor: 'black' }}
       />
     </ProfileActivitiesStack.Navigator >
   );

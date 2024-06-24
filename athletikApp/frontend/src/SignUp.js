@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Input, Button, Divider } from '@rneui/themed';
 import * as SecureStore from 'expo-secure-store';
 import { BACKEND_URL } from '../config';

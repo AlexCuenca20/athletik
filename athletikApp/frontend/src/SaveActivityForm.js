@@ -3,7 +3,6 @@ import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 're
 import * as SecureStore from 'expo-secure-store';
 import { Input, Button, Divider, CheckBox, Text } from '@rneui/themed';
 import { PickerIOS } from '@react-native-picker/picker';
-import moment from 'moment';
 import { CommonActions } from '@react-navigation/native';
 import { BACKEND_URL } from '../config';
 

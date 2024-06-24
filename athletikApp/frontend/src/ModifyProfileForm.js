@@ -81,9 +81,6 @@ class ModifyProfileForm extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.upperContainer}>
-                    <Text style={styles.h1}>
-                        Modifica tus datos
-                    </Text>
                     <View style={styles.inputView}>
                         <Input
                             label="Nombre"
